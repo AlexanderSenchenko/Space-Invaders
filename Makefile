@@ -1,0 +1,31 @@
+BIN_NAME := main
+
+SRC_PATH := src
+BUILD_PATH := build
+BIN_PATH := bin
+
+COMPILE_FLAGS := -g
+
+SRC_EXT := c
+CC := gcc
+
+.PHONY: dirs clean
+
+SRC_FILES := $(wildcard $(addsuffix /*.$(SRC_EXT), $(SRC_PATH)))
+SRC_OBJECTS := $(addprefix $(BUILD_PATH)/, $(notdir $(SRC_FILES:.$(SRC_EXT)=.o)))
+
+all: dirs $(BIN_PATH)/$(BIN_NAME)
+
+$(BIN_PATH)/$(BIN_NAME): $(SRC_OBJECTS)
+	$(CC) $(COMPILE_FLAGS) $^ -o $@
+
+$(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
+	$(CC) $(COMPILE_FLAGS) $^ -c -o $@
+
+dirs:
+	@mkdir $(BUILD_PATH) -p
+	@mkdir $(BIN_PATH) -p
+
+clean:
+	@rm -rf $(BIN_PATH)
+	@rm -rf $(BUILD_PATH)
