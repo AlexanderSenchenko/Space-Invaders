@@ -18,3 +18,5 @@ void menu_destroy(Menu* menu);
 
 void menu_go_up(Menu* menu);
 void menu_go_down(Menu* menu);
+
+int menu_act_on_item(Menu* menu);

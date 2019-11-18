@@ -2,12 +2,10 @@
 #include <curses.h>
 #include "menu.h"
 
-#define TERMINAL_HEIGHT 24 
-#define TERMINAL_WIDTH 80
-
 int main(int argc, const char **argv)
 {
 	ncurses_init();
+	
 	Menu main_menu;
 	menu_init(&main_menu);
 	
@@ -21,6 +19,11 @@ int main(int argc, const char **argv)
 			case 'q': flag = 0; break;
 			case KEY_DOWN: menu_go_down(&main_menu); break;
 			case KEY_UP: menu_go_up(&main_menu); break;
+			case '\n': 
+				if(menu_act_on_item(&main_menu))
+					flag = 0;
+				break;
+			case ERR: break;
 			default: break;	
 		}
 	}

@@ -10,6 +10,7 @@ void ncurses_init()
 	refresh();
 	init_pair(1, COLOR_YELLOW, COLOR_BLUE);
 	keypad(stdscr, 1);
+	nodelay(stdscr, 1);
 }
 
 void menu_init(Menu* menu)
@@ -57,4 +58,17 @@ void menu_go_up(Menu* menu)
 		wbkgd(menu->menu_items[--menu->current_idx], COLOR_PAIR(1) | A_BOLD);
 		wrefresh(menu->menu_items[menu->current_idx]);
 	}
+}
+
+int menu_act_on_item(Menu* menu)
+{
+	int close_program = 0;
+	switch(menu->current_idx)
+	{
+		case 0: /* Тут должен быть вызов функции, отправляющей серверу предложение об игре */break;
+		case 1: close_program = 1; break;
+		default: break;
+	}
+	
+	return close_program;
 }
