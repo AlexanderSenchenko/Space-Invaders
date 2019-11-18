@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "../../include/graphics/menu.h"
 
 void ncurses_init()
 {

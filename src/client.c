@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <curses.h>
-#include "menu.h"
+#include "../include/graphics/menu.h"
 
 int main(int argc, const char **argv)
 {

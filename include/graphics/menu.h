@@ -1,3 +1,6 @@
+#ifndef _MENU_H_
+#define _MENU_H_
+
 #include <curses.h>
 
 #define TERMINAL_HEIGHT 24 
@@ -20,3 +23,5 @@ void menu_go_up(Menu* menu);
 void menu_go_down(Menu* menu);
 
 int menu_act_on_item(Menu* menu);
+
+#endif // _MENU_H_
