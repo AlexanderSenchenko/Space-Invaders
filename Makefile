@@ -1,4 +1,4 @@
-BIN_NAME := main
+BIN_NAME := client
 
 SRC_PATH := src
 BUILD_PATH := build
