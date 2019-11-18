@@ -9,6 +9,7 @@ void ncurses_init()
 	noecho();
 	refresh();
 	init_pair(1, COLOR_YELLOW, COLOR_BLUE);
+	keypad(stdscr, 1);
 }
 
 void menu_init(Menu* menu)
@@ -22,7 +23,8 @@ void menu_init(Menu* menu)
 	wprintw(menu->menu_items[1], "Exit");
 	
 	wbkgd(menu->menu_wnd, COLOR_PAIR(1));
-	wbkgd(menu->menu_items[0], COLOR_PAIR(1) | A_BOLD);
+	menu->current_idx = 0;
+	wbkgd(menu->menu_items[menu->current_idx], COLOR_PAIR(1) | A_BOLD);
 	wrefresh(menu->menu_wnd);
 }
 
@@ -33,4 +35,26 @@ void menu_destroy(Menu* menu)
 		delwin(menu->menu_items[i]);
 	}
 	delwin(menu->menu_wnd);
+}
+
+void menu_go_down(Menu* menu)
+{
+	if(menu->current_idx + 1 < NUM_MENU_ITEMS)
+	{
+		wbkgd(menu->menu_items[menu->current_idx], COLOR_PAIR(1));
+		wrefresh(menu->menu_items[menu->current_idx]);
+		wbkgd(menu->menu_items[++menu->current_idx], COLOR_PAIR(1) | A_BOLD);
+		wrefresh(menu->menu_items[menu->current_idx]);
+	}
+}
+
+void menu_go_up(Menu* menu)
+{
+	if(menu->current_idx - 1 >= 0)
+	{
+		wbkgd(menu->menu_items[menu->current_idx], COLOR_PAIR(1));
+		wrefresh(menu->menu_items[menu->current_idx]);
+		wbkgd(menu->menu_items[--menu->current_idx], COLOR_PAIR(1) | A_BOLD);
+		wrefresh(menu->menu_items[menu->current_idx]);
+	}
 }

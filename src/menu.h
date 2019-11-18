@@ -8,9 +8,13 @@ struct Menu_
 {
 	WINDOW* menu_wnd;
 	WINDOW* menu_items[NUM_MENU_ITEMS];
+	int current_idx;
 };
 typedef struct Menu_ Menu;
 
 void ncurses_init();
 void menu_init(Menu* menu);
 void menu_destroy(Menu* menu);
+
+void menu_go_up(Menu* menu);
+void menu_go_down(Menu* menu);
