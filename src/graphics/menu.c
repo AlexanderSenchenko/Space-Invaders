@@ -1,7 +1,24 @@
+#include <termios.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
 #include "../../include/graphics/menu.h"
+
+void check_terminal_size()
+{
+	struct winsize size;
+	ioctl(fileno(stdout), TIOCGWINSZ, (char *) &size);
+	if(size.ws_col != TERMINAL_WIDTH || size.ws_row != TERMINAL_HEIGHT)
+	{
+		printf("Terminal has improper width/height!\n");
+		printf("Recommended sizes are: width - %d  height - %d\n", TERMINAL_WIDTH, TERMINAL_HEIGHT);
+		exit(EXIT_FAILURE);
+	}
+}
 
 void ncurses_init()
 {
+	check_terminal_size();
+	
 	initscr();
 	cbreak();
 	curs_set(0);
