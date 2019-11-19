@@ -32,10 +32,13 @@ void ncurses_init()
 
 void menu_init(Menu* menu)
 {
-	menu->menu_wnd = newwin(NUM_MENU_ITEMS, 10, TERMINAL_HEIGHT / 2, TERMINAL_WIDTH / 2);
+	int menu_item_width = 4;
+	int menu_ncurses_y = TERMINAL_HEIGHT / 2 - NUM_MENU_ITEMS / 2;
+	int menu_ncurses_x = TERMINAL_WIDTH / 2 - menu_item_width / 2;
+	menu->menu_wnd = newwin(NUM_MENU_ITEMS, menu_item_width, menu_ncurses_y, menu_ncurses_x);
 	for(int i = 0; i < NUM_MENU_ITEMS; i++)
 	{
-		menu->menu_items[i] = derwin(menu->menu_wnd, 1, 10, i, 0);
+		menu->menu_items[i] = derwin(menu->menu_wnd, 1, menu_item_width, i, 0);
 	}
 	wprintw(menu->menu_items[0], "Play");
 	wprintw(menu->menu_items[1], "Exit");
