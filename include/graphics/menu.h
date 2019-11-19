@@ -15,6 +15,7 @@ struct Menu_
 };
 typedef struct Menu_ Menu;
 
+void sig_winch(int signo);
 void check_terminal_size();
 
 void ncurses_init();

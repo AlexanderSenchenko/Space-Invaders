@@ -1,7 +1,13 @@
 #include <termios.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <sys/ioctl.h>
 #include "../../include/graphics/menu.h"
+
+void sig_winch(int signo)
+{
+	
+}
 
 void check_terminal_size()
 {
@@ -20,6 +26,7 @@ void ncurses_init()
 	check_terminal_size();
 	
 	initscr();
+	signal(SIGWINCH, sig_winch);
 	cbreak();
 	curs_set(0);
 	start_color();
