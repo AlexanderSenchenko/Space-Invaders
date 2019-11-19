@@ -3,8 +3,8 @@
 
 #include <curses.h>
 
-#define TERMINAL_HEIGHT 24 
 #define TERMINAL_WIDTH 80
+#define TERMINAL_HEIGHT 24 
 #define NUM_MENU_ITEMS 2
 
 struct Menu_
@@ -14,6 +14,8 @@ struct Menu_
 	int current_idx;
 };
 typedef struct Menu_ Menu;
+
+void check_terminal_size();
 
 void ncurses_init();
 void menu_init(Menu* menu);
