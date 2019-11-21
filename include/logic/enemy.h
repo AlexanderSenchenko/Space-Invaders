@@ -15,15 +15,14 @@ typedef struct enemy
 {
     bullet_t * bullet;
     char * image;
-    int x;
-    int y;
+    point_t * coord;
     unsigned int hp;
     unsigned int type;
     unsigned int points;
     unsigned int damage;
 }enemy_t;
 
-enemy_t * enemy_init(int, int, unsigned int);
+enemy_t * enemy_init(point_t *, unsigned int);
 
 bullet_t * enemy_fire(enemy_t *);
 

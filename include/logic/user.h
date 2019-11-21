@@ -7,15 +7,14 @@ typedef struct player
 {
     bullet_t * bullet;
     char * image;
-    int x;
-    int y;
+    point_t * coord;
     unsigned int hp;
     unsigned int points;
     unsigned int damage;
 }player_t;
 
 
-player_t * user_init(int, int);
+player_t * user_init(point_t *);
 
 bullet_t * user_fire(player_t *);
 

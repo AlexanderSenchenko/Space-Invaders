@@ -1,11 +1,10 @@
 #include "../../include/logic/user.h"
 
-player_t * user_init(int x, int y)
+player_t * user_init(point_t * point)
 {
     player_t * user = (player_t *)malloc(sizeof(player_t));
 
-    user->x = x;
-    user->y = y;
+    user->coord = point;
     user->bullet = NULL;
     user->hp = 3;
     user->damage = 1;
@@ -16,7 +15,7 @@ player_t * user_init(int x, int y)
 
 bullet_t * user_fire(player_t * user)
 {
-    user->bullet = bullet_init(user->x, user->y, USER);
+    user->bullet = bullet_init(user->coord, USER);
 }
 
 void user_move(player_t * user, unsigned int where)
@@ -24,11 +23,11 @@ void user_move(player_t * user, unsigned int where)
     switch(where)
     {
         case 0:
-            user->x -=2;
+            user->coord->x -=2;
             break;
         
         case 1:
-            user->x +=2;
+            user->coord->x +=2;
             break;
     }
 

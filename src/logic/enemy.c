@@ -1,11 +1,10 @@
 #include "../../include/logic/enemy.h"
 
-enemy_t * enemy_init(int x, int y, unsigned int type)
+enemy_t * enemy_init(point_t * point, unsigned int type)
 {
     enemy_t * alien = (enemy_t *)malloc(sizeof(enemy_t));
 
-    alien->x = x;
-    alien->y = y;
+    alien->coord = point;
     alien->bullet = NULL;
     alien->type = type;
 
@@ -49,7 +48,7 @@ enemy_t * enemy_init(int x, int y, unsigned int type)
 
 bullet_t * enemy_fire(enemy_t * alien)
 {
-    alien->bullet = bullet_init(alien->x, alien->y, ENEMY);
+    alien->bullet = bullet_init(alien->coord, ENEMY);
 }
 
 void enemy_move(enemy_t * alien, unsigned int where)
@@ -57,15 +56,15 @@ void enemy_move(enemy_t * alien, unsigned int where)
     switch(where)
     {
         case 0:
-            alien->x -=2;
+            alien->coord->x -=2;
             break;
         
         case 1:
-            alien->x +=2;
+            alien->coord->x +=2;
             break;
         
         case 2:
-            alien->y +=2;
+            alien->coord->y +=2;
             break;
     }
 

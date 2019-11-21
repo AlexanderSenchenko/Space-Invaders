@@ -5,12 +5,9 @@
 #include <stdbool.h>
 
 #include "models.h"
+#include "user.h"
+#include "enemy.h"
 
-enum TAGS
-{
-    USER,
-    ENEMY
-};
 #define Fire(X) _Generic((X), \
     player_t *: user_fire, \
     enemy_t *: enemy_fire \
@@ -30,5 +27,28 @@ enum TAGS
         unsigned int:  user_move, \
     ) \
 )(X, Y)
+
+enum TAGS
+{
+    USER,
+    ENEMY
+};
+
+typedef struct point
+{
+    int x;
+    int y;
+}point_t;
+
+typedef struct game
+{
+    player_t ** users;
+    enemy_t ** aliens;
+    unsigned int score;
+}game_t;
+
+
+game_t * game_init(void);
+
 
 #endif // _GAME_H_

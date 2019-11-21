@@ -1,11 +1,10 @@
 #include "../../include/logic/bullet.h"
 
-bullet_t * bullet_init(int x, int y, int tag)
+bullet_t * bullet_init(point_t * point, int tag)
 {
     bullet_t * shot = (bullet_t *)malloc(sizeof(bullet_t));
 
-    shot->x = x;
-    shot->y = y;
+    shot->coord = point;
     shot->tag = tag;
 
     switch(tag)
@@ -28,9 +27,12 @@ bullet_t * bullet_init(int x, int y, int tag)
 bool bullet_move(bullet_t * shot)
 {   
 
-    shot->y -= 2;
-    if(shot->y <= 0)
-    return false;
+    shot->coord->y -= 2;
+    if(shot->coord->y <= 0)
+    {
+        bullet_dest(shot);
+        return false;
+    }
 
     //else if( Попал )
         //dest(shot);

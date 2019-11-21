@@ -97,6 +97,32 @@ void menu_go_up(Menu* menu)
 	}
 }
 
+void menu_move(Menu* menu)
+{
+	while(1)
+	{
+		int ch = getch();
+		switch(ch)
+		{
+			case 'q': 
+				return;
+			case KEY_DOWN: 
+				menu_go_down(menu); 
+				break;
+			case KEY_UP: 
+				menu_go_up(menu); 
+				break;
+			case '\n': 
+				if(menu_act_on_item(menu))
+				return;
+			case ERR:
+				return;
+			default: 
+				break;	
+		}
+	}
+}
+
 int menu_act_on_item(Menu* menu)
 {
 	int close_program = 0;

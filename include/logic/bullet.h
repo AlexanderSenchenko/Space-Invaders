@@ -7,13 +7,12 @@
 typedef struct bullet
 {
     char * image;
-    int x;
-    int y;
+    point_t * coord;
     unsigned int tag;
 
 }bullet_t;
 
-bullet_t * bullet_init(int, int, int);
+bullet_t * bullet_init(point_t * , int);
 
 bool bullet_move(bullet_t *);
 
