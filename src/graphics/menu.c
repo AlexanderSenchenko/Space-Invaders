@@ -3,6 +3,7 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 #include "../../include/graphics/menu.h"
+#include "../../include/network/client.h"
 
 void sig_winch(int signo)
 {
@@ -16,7 +17,8 @@ void check_terminal_size()
 	if(size.ws_col != TERMINAL_WIDTH || size.ws_row != TERMINAL_HEIGHT)
 	{
 		printf("Terminal has improper width/height!\n");
-		printf("Recommended sizes are: width - %d  height - %d\n", TERMINAL_WIDTH, TERMINAL_HEIGHT);
+		printf("Recommended sizes are: width - %d  height - %d\n",
+					 TERMINAL_WIDTH, TERMINAL_HEIGHT);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -48,12 +50,18 @@ void menu_init(Menu* menu)
 	int menu_ncurses_y = TERMINAL_HEIGHT / 2 - menu_height / 2;
 	int menu_ncurses_x = TERMINAL_WIDTH / 2 - menu_width / 2;
 	
-	menu->menu_wnd = newwin(menu_height, menu_width, menu_ncurses_y, menu_ncurses_x);
+	menu->menu_wnd = newwin(menu_height,
+													menu_width,
+													menu_ncurses_y,
+													menu_ncurses_x);
 	
 	int menu_item_width = menu_width - menu_box_offset;
 	for(int i = 0; i < NUM_MENU_ITEMS; i++)
 	{
-		menu->menu_items[i] = derwin(menu->menu_wnd, 1, menu_item_width, i + menu_box_offset / 2, 0 + menu_box_offset / 2);
+		menu->menu_items[i] = derwin(menu->menu_wnd, 1,
+																 menu_item_width,
+																 i + menu_box_offset / 2,
+																 0 + menu_box_offset / 2);
 	}
 	wprintw(menu->menu_items[0], "Play");
 	wprintw(menu->menu_items[1], "Exit");
@@ -97,39 +105,48 @@ void menu_go_up(Menu* menu)
 	}
 }
 
-void menu_move(Menu* menu)
+void menu_move(Menu* menu, int argc, char **argv)
 {
-	while(1)
+	int flag = 1;
+	while(flag)
 	{
 		int ch = getch();
 		switch(ch)
 		{
-			case 'q': 
-				return;
-			case KEY_DOWN: 
-				menu_go_down(menu); 
+			case 'q':
+				flag = 0;
 				break;
-			case KEY_UP: 
-				menu_go_up(menu); 
+			case KEY_DOWN:
+				menu_go_down(menu);
+				break;
+			case KEY_UP:
+				menu_go_up(menu);
 				break;
 			case '\n': 
-				if(menu_act_on_item(menu))
-				return;
+				if(menu_act_on_item(menu, argc, argv))
+					flag = 0;
+				break;
 			case ERR:
-				return;
-			default: 
+				break;
+			default:
 				break;	
 		}
 	}
 }
 
-int menu_act_on_item(Menu* menu)
+int menu_act_on_item(Menu* menu, int argc, char **argv)
 {
 	int close_program = 0;
 	switch(menu->current_idx)
 	{
-		case 0: /* Тут должен быть вызов функции, отправляющей серверу предложение об игре */break;
-		case 1: close_program = 1; break;
+		case 0:
+			init_client(argc, argv);
+			reception();
+			// expectation();
+			break;
+		case 1:
+			close_program = 1;
+			break;
 		default: break;
 	}
 	
