@@ -3,32 +3,29 @@
 
 #include "bullet.h"
 
-enum enemy_types
-{
-    WEAK,
-    MEDIUM,
-    HARD,
-    RARE
+enum enemy_types {
+  WEAK,
+  MEDIUM,
+  HARD,
+  RARE
 };
 
-typedef struct enemy
-{
-    bullet_t * bullet;
-    char * image;
-    int x;
-    int y;
-    unsigned int hp;
-    unsigned int type;
-    unsigned int points;
-    unsigned int damage;
-}enemy_t;
+struct enemy {
+  struct bullet *bullet;
+  char *image;
+  struct point *coord;
+  unsigned int hp;
+  unsigned int type;
+  unsigned int points;
+  unsigned int damage;
+};
 
-enemy_t * enemy_init(int, int, unsigned int);
+struct enemy *enemy_init(struct point *, unsigned int);
 
-bullet_t * enemy_fire(enemy_t *);
+struct bullet *enemy_fire(struct enemy *);
 
-void enemy_move(enemy_t *, unsigned int);
+void enemy_move(struct enemy *, unsigned int);
 
-void enemy_dest(enemy_t *);
+void enemy_dest(struct enemy *);
 
 #endif // _ENEMY_H_

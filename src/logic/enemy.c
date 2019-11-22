@@ -1,77 +1,74 @@
 #include "../../include/logic/enemy.h"
 
-enemy_t * enemy_init(int x, int y, unsigned int type)
+extern char *enemy_models[];
+
+struct enemy *enemy_init(struct point *point, unsigned int type)
 {
-    enemy_t * alien = (enemy_t *)malloc(sizeof(enemy_t));
+  struct enemy *alien = (struct enemy *)malloc(sizeof(struct enemy));
 
-    alien->x = x;
-    alien->y = y;
-    alien->bullet = NULL;
-    alien->type = type;
+  alien->coord = point;
+  alien->bullet = NULL;
+  alien->type = type;
 
-    switch(type)
-    {
-        case WEAK:
-            alien->hp = 1;
-            alien->points = 5;
-            alien->damage = 1;
-            alien->image = enemy_models[0];
-            break;
-        
-        case MEDIUM:
-            alien->hp = 2;
-            alien->points = 10;
-            alien->damage = 2;
-            alien->image = enemy_models[1];
-            break;
+  switch (type) {
+  case WEAK:
+    alien->hp = 1;
+    alien->points = 5;
+    alien->damage = 1;
+    alien->image = enemy_models[0];
+    break;
 
-        case HARD:
-            alien->hp = 3;
-            alien->points = 20;
-            alien->damage = 3;
-            alien->image = enemy_models[2]; 
-            break;
+  case MEDIUM:
+    alien->hp = 2;
+    alien->points = 10;
+    alien->damage = 2;
+    alien->image = enemy_models[1];
+    break;
 
-        case RARE:
-            alien->hp = 1;
-            alien->points = 50;
-            alien->damage = 5;
-            alien->image = enemy_models[3]; 
-            break;
-        
-        //default:
-            //error type
+  case HARD:
+    alien->hp = 3;
+    alien->points = 20;
+    alien->damage = 3;
+    alien->image = enemy_models[2];
+    break;
 
-    }
+  case RARE:
+    alien->hp = 1;
+    alien->points = 50;
+    alien->damage = 5;
+    alien->image = enemy_models[3];
+    break;
 
-    return alien;
+    //default:
+    //error type
+  }
+
+  return alien;
 }
 
-bullet_t * enemy_fire(enemy_t * alien)
+struct bullet *enemy_fire(struct enemy *alien)
 {
-    alien->bullet = bullet_init(alien->x, alien->y, ENEMY);
+  alien->bullet = bullet_init(alien->coord, ENEMY);
 }
 
-void enemy_move(enemy_t * alien, unsigned int where)
+void enemy_move(struct enemy *alien, unsigned int where)
 {
-    switch(where)
-    {
-        case 0:
-            alien->x -=2;
-            break;
-        
-        case 1:
-            alien->x +=2;
-            break;
-        
-        case 2:
-            alien->y +=2;
-            break;
-    }
+  switch (where) {
+  case 0:
+    alien->coord->x -= 2;
+    break;
 
+  case 1:
+    alien->coord->x += 2;
+    break;
+
+  case 2:
+    alien->coord->y += 2;
+    break;
+  }
 }
 
-void enemy_dest(enemy_t *alien)
+void enemy_dest(struct enemy *alien)
 {
-    free(alien);
+  free(alien);
 }

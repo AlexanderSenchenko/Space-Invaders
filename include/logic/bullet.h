@@ -3,20 +3,16 @@
 
 #include "game.h"
 
+struct bullet {
+  char *image;
+  struct point *coord;
+  unsigned int tag;
+};
 
-typedef struct bullet
-{
-    char * image;
-    int x;
-    int y;
-    unsigned int tag;
+struct bullet *bullet_init(struct point *, int);
 
-}bullet_t;
+bool bullet_move(struct bullet *);
 
-bullet_t * bullet_init(int, int, int);
-
-bool bullet_move(bullet_t *);
-
-void bullet_dest(bullet_t *);
+void bullet_dest(struct bullet *);
 
 #endif // _BULLET_H_

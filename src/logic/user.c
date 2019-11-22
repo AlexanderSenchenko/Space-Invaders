@@ -1,40 +1,40 @@
 #include "../../include/logic/user.h"
 
-player_t * user_init(int x, int y)
+extern char *player_models[];
+
+struct player *user_init(struct point *point)
 {
-    player_t * user = (player_t *)malloc(sizeof(player_t));
+  struct player *user = (struct player *)malloc(sizeof(struct player));
 
-    user->x = x;
-    user->y = y;
-    user->bullet = NULL;
-    user->hp = 3;
-    user->damage = 1;
-    user->image = player_models[0];
+  user->coord = point;
+  user->bullet = NULL;
+  user->hp = 3;
+  user->damage = 1;
+  user->image = player_models[0];
 
-    return user;
+  return user;
 }
 
-bullet_t * user_fire(player_t * user)
+struct bullet *user_fire(struct player *user)
 {
-    user->bullet = bullet_init(user->x, user->y, USER);
+  user->bullet = bullet_init(user->coord, USER);
 }
 
-void user_move(player_t * user, unsigned int where)
+void user_move(struct player *user, unsigned int where)
 {
-    switch(where)
-    {
-        case 0:
-            user->x -=2;
-            break;
-        
-        case 1:
-            user->x +=2;
-            break;
-    }
+  switch (where) {
+  case 0:
+    user->coord->x -= 2;
+    break;
+
+  case 1:
+    user->coord->x += 2;
+    break;
+  }
 
 }
 
-void user_dest(player_t * user)
+void user_dest(struct player *user)
 {
-    free(user);
+  free(user);
 }

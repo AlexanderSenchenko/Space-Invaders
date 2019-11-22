@@ -9,13 +9,11 @@
 #include <netinet/ip.h>
 #include <netinet/udp.h>
 #include <arpa/inet.h>
+#include "../../include/network/client.h"
 
-struct serv_information
-{
+struct serv_information {
   unsigned int status;
-
 };
-
 
 struct sockaddr_in addr_server;
 struct serv_information information_to_player;
@@ -26,47 +24,46 @@ pthread_t receiver_from_server;
 
 int file_descrip_client;
 
-void reception();
-void expectation();
-
-
-int main(int argc, char *argv[])
+void init_client(int argc, char **argv)
 {
   addr_server.sin_family = AF_INET;
-  if(argc == 3)
-	{
-		inet_aton(argv[1], &addr_server.sin_addr);
+
+  if (argc == 3) {
+    inet_aton(argv[1], &addr_server.sin_addr);
     addr_server.sin_port = htons(atoi(argv[2]));
-	}
-	else if(argc == 2)
-	{
-		inet_aton(argv[1], &addr_server.sin_addr);
+  } else if (argc == 2) {
+    inet_aton(argv[1], &addr_server.sin_addr);
     addr_server.sin_port = htons(8974);
-	}
-  else if(argc == 1)
-  {
+  } else if (argc == 1) {
     inet_aton("127.0.0.1", &addr_server.sin_addr);
     addr_server.sin_port = htons(8974);
   }
-  reception();
-  expectation();
 }
 
 void reception()
 {
   file_descrip_client = socket(AF_INET, SOCK_DGRAM, 0);
   information_from_player.status = 1;
-  sendto(file_descrip_client, &information_from_player, sizeof(information_from_player), 0, (struct sockaddr *)&addr_server, addr_in_size);
-  recvfrom(file_descrip_client, &information_to_player, sizeof(information_to_player), 0, (struct sockaddr *)&addr_server, &addr_in_size);
+
+  sendto(file_descrip_client, &information_from_player,
+         sizeof(information_from_player), 0,
+         (struct sockaddr *)&addr_server, addr_in_size);
+
+  recvfrom(file_descrip_client, &information_to_player,
+           sizeof(information_to_player), 0,
+           (struct sockaddr *)&addr_server, &addr_in_size);
 }
+
 void *receiver() /*Заготовка*/
 {
-  while(1)
-  {
-    recvfrom(file_descrip_client, &information_to_player, sizeof(information_to_player), 0, (struct sockaddr *)&addr_server, &addr_in_size);
+  while (1) {
+    recvfrom(file_descrip_client, &information_to_player,
+             sizeof(information_to_player), 0,
+             (struct sockaddr *)&addr_server, &addr_in_size);
     /*Отправляет данные в функцию game_session*/
   }
 }
+
 /*void game_session()
 {
   void *status;
@@ -78,25 +75,27 @@ void *receiver() /*Заготовка*/
   i_error = pthread_join(receiver_from_server, &status);
   error_output(ERROR_PTHREAD);
 }*/
+
 void expectation()
 {
   int flag = 1;
-  recvfrom(file_descrip_client, &information_to_player, sizeof(information_to_player), 0, (struct sockaddr *)&addr_server, &addr_in_size);
-  if(information_to_player.status == 2)
-  {
-    //game_session();
-  }
-  else
-  {
-    while(flag == 1)
-    {
-      recvfrom(file_descrip_client, &information_to_player, sizeof(information_to_player), 0, (struct sockaddr *)&addr_server, &addr_in_size);
+  recvfrom(file_descrip_client, &information_to_player,
+           sizeof(information_to_player), 0,
+           (struct sockaddr *)&addr_server, &addr_in_size);
 
-      if(information_to_player.status == 2)
-      {
+  if (information_to_player.status == 2) {
+    //game_session();
+  } else {
+    while (flag == 1) {
+      recvfrom(file_descrip_client, &information_to_player,
+               sizeof(information_to_player), 0,
+               (struct sockaddr *)&addr_server, &addr_in_size);
+
+      if (information_to_player.status == 2) {
         flag = 0;
       }
     }
+
     //game_session();
   }
 }
