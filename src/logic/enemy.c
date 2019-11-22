@@ -46,24 +46,24 @@ struct enemy *enemy_init(struct point *point, unsigned int type)
   return alien;
 }
 
-struct bullet *enemy_fire(struct enemy *alien)
+void enemy_fire(struct enemy *alien)
 {
   alien->bullet = bullet_init(alien->coord, ENEMY);
 }
 
-void enemy_move(struct enemy *alien, unsigned int where)
+void enemy_move(struct enemy *alien, int where)
 {
   switch (where) {
   case 0:
-    alien->coord->x -= 2;
+    alien->coord->x -= 2; // поставить сколько надо 
     break;
 
   case 1:
-    alien->coord->x += 2;
+    alien->coord->x += 2;//
     break;
 
   case 2:
-    alien->coord->y += 2;
+    alien->coord->y += 2;//
     break;
   }
 }

@@ -4,18 +4,14 @@ struct game *game_init(void)
 {
   struct game *game = (struct game *)malloc(sizeof(struct game));
 
-  struct point **users_coord = (struct point **)malloc(2 * sizeof(
-                                 struct point *));
-  struct player **users = (struct player **)malloc(2 * sizeof(struct player *));
+  struct point *user_coord = (struct point *)malloc(sizeof(struct point ));
+  struct player *user = (struct player *)malloc(sizeof(struct player ));
 
-  for (int i = 0; i < 2; i++) {
-    users_coord[i] = (struct point *)malloc(sizeof(struct point));
+  user_coord->x = 0; // ЗДЕСЬ ВСТАВИТЬ НАЧАЛЬНЫЕ КООРДЫ
+  user_coord->y = 0 + 1; // ДЛЯ ИГРОКОВ
 
-    users_coord[i]->x = i; // ЗДЕСЬ ВСТАВИТЬ НАЧАЛЬНЫЕ КООРДЫ
-    users_coord[i]->y = i + 1; // ДЛЯ ИГРОКОВ
+  user = user_init(user_coord);
 
-    users[i] = user_init(users_coord[i]);
-  }
 
   // инициализация для первого слоя мобов
   struct point **alien_coord = (struct point **)malloc(12 * sizeof(
@@ -52,6 +48,42 @@ struct game *game_init(void)
   }
 
   game->aliens = aliens;
-  game->users = users;
+  game->user = user;
   game->score = 0;
+}
+
+void game_user_move(struct game * game)
+{
+  int ch;
+  while(ch = getch()) {
+  switch(ch) 
+  {
+      case 'a':
+        user_move(game->user,ch);
+        break;
+
+      case 'd':
+        user_move(game->user,ch);
+        break;
+
+      case KEY_LEFT:
+        user_move(game->user,ch);
+        break;
+      
+      case KEY_RIGHT:
+        user_move(game->user,ch);
+        break;
+      
+      case ' ':
+        user_fire(game->user);
+        break;
+  }  
+
+  }
+}
+
+void game_process(struct game * game)
+{
+    game_user_move(game);
+
 }

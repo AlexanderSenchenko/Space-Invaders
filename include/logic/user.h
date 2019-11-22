@@ -14,7 +14,7 @@ struct player {
 
 struct player *user_init(struct point *);
 
-struct bullet *user_fire(struct player *);
+void user_fire(struct player *);
 
 void user_move(struct player *, unsigned int);
 
