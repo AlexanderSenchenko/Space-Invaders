@@ -11,8 +11,7 @@
 #include <arpa/inet.h>
 #include "../../include/network/client.h"
 
-struct serv_information
-{
+struct serv_information {
   unsigned int status;
 };
 
@@ -28,18 +27,14 @@ int file_descrip_client;
 void init_client(int argc, char **argv)
 {
   addr_server.sin_family = AF_INET;
-  if(argc == 3)
-	{
-		inet_aton(argv[1], &addr_server.sin_addr);
+
+  if (argc == 3) {
+    inet_aton(argv[1], &addr_server.sin_addr);
     addr_server.sin_port = htons(atoi(argv[2]));
-	}
-	else if(argc == 2)
-	{
-		inet_aton(argv[1], &addr_server.sin_addr);
+  } else if (argc == 2) {
+    inet_aton(argv[1], &addr_server.sin_addr);
     addr_server.sin_port = htons(8974);
-	}
-  else if(argc == 1)
-  {
+  } else if (argc == 1) {
     inet_aton("127.0.0.1", &addr_server.sin_addr);
     addr_server.sin_port = htons(8974);
   }
@@ -61,8 +56,7 @@ void reception()
 
 void *receiver() /*Заготовка*/
 {
-  while(1)
-  {
+  while (1) {
     recvfrom(file_descrip_client, &information_to_player,
              sizeof(information_to_player), 0,
              (struct sockaddr *)&addr_server, &addr_in_size);
@@ -88,24 +82,20 @@ void expectation()
   recvfrom(file_descrip_client, &information_to_player,
            sizeof(information_to_player), 0,
            (struct sockaddr *)&addr_server, &addr_in_size);
-  
-  if(information_to_player.status == 2)
-  {
+
+  if (information_to_player.status == 2) {
     //game_session();
-  }
-  else
-  {
-    while(flag == 1)
-    {
+  } else {
+    while (flag == 1) {
       recvfrom(file_descrip_client, &information_to_player,
                sizeof(information_to_player), 0,
                (struct sockaddr *)&addr_server, &addr_in_size);
 
-      if(information_to_player.status == 2)
-      {
+      if (information_to_player.status == 2) {
         flag = 0;
       }
     }
+
     //game_session();
   }
 }

@@ -25,7 +25,7 @@ PTHREAD_LIB := -lpthread
 LIBS_SERVER := $(PTHREAD_LIB)
 LIBS_CLIENT := $(NCURSES_LIBS) $(PTHREAD_LIB)
 
-.PHONY: dirs_server dirs_client clean server client
+.PHONY: dirs_server dirs_client clean server client style clean_orig
 
 all: server client
 
@@ -68,3 +68,26 @@ dirs_server:
 clean:
 	@rm -rf $(BIN_PATH)
 	@rm -rf $(BUILD_PATH)
+
+style:
+	astyle	--style=kr\
+					--align-pointer=name\
+					--break-one-line-headers\
+					--mode=c\
+					--pad-header\
+					--pad-comma\
+					--pad-oper\
+					--break-blocks\
+					--indent=spaces=2\
+					--indent-classes\
+					--recursive\
+					"./*.c,*.h"
+
+clean_orig:
+	@rm -f include/graphics/*.orig
+	@rm -f include/logic/*.orig
+	@rm -f include/network/*.orig
+	@rm -f $(SRC_PATH)/*.orig
+	@rm -f $(GRAPHICS_PATH)/*.orig
+	@rm -f $(LOGIC_PATH)/*.orig
+	@rm -f $(NETWORK_PATH)/*.orig

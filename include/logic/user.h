@@ -3,19 +3,18 @@
 
 #include "bullet.h"
 
-struct player
-{
-    struct bullet * bullet;
-    char * image;
-    struct point * coord;
-    unsigned int hp;
-    unsigned int points;
-    unsigned int damage;
+struct player {
+  struct bullet *bullet;
+  char *image;
+  struct point *coord;
+  unsigned int hp;
+  unsigned int points;
+  unsigned int damage;
 };
 
-struct player * user_init(struct point *);
+struct player *user_init(struct point *);
 
-struct bullet * user_fire(struct player *);
+struct bullet *user_fire(struct player *);
 
 void user_move(struct player *, unsigned int);
 

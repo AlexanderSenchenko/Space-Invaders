@@ -27,25 +27,22 @@
     ) \
 )(X, Y)
 
-enum TAGS
-{
-    USER,
-    ENEMY
+enum TAGS {
+  USER,
+  ENEMY
 };
 
-struct point
-{
-    int x;
-    int y;
+struct point {
+  int x;
+  int y;
 };
 
-struct game
-{
-    struct player ** users;
-    struct enemy ** aliens;
-    unsigned int score;
+struct game {
+  struct player **users;
+  struct enemy **aliens;
+  unsigned int score;
 };
 
-struct game * game_init(void);
+struct game *game_init(void);
 
 #endif // _GAME_H_
