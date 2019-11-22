@@ -1,12 +1,9 @@
-#include "../../include/logic/models.h"
-
 char * enemy_models[] = 
 { 
     "###",
     "<o>",
     "#\\%/#",
-    "@_@" 
-    
+    "@_@"
 };
 
 char * player_models[] =

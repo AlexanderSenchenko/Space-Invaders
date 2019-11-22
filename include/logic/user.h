@@ -3,23 +3,22 @@
 
 #include "bullet.h"
 
-typedef struct player
+struct player
 {
-    bullet_t * bullet;
+    struct bullet * bullet;
     char * image;
-    point_t * coord;
+    struct point * coord;
     unsigned int hp;
     unsigned int points;
     unsigned int damage;
-}player_t;
+};
 
+struct player * user_init(struct point *);
 
-player_t * user_init(point_t *);
+struct bullet * user_fire(struct player *);
 
-bullet_t * user_fire(player_t *);
+void user_move(struct player *, unsigned int);
 
-void user_move(player_t *, unsigned int);
-
-void user_dest(player_t *);
+void user_dest(struct player *);
 
 #endif //_USER_H_

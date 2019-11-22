@@ -1,15 +1,15 @@
 #include "../../include/logic/game.h"
 
-game_t * game_init(void)
+struct game * game_init(void)
 {
-    game_t * game = (game_t *)malloc(sizeof(game_t));
+    struct game * game = (struct game *)malloc(sizeof(struct game));
 
-    point_t **users_coord = (point_t **)malloc(2 * sizeof(point_t*));
-    player_t **users = (player_t **)malloc(2 * sizeof(player_t *));
+    struct point **users_coord = (struct point **)malloc(2 * sizeof(struct point*));
+    struct player **users = (struct player **)malloc(2 * sizeof(struct player *));
 
     for (int i = 0; i < 2; i++)
     {
-        users_coord[i] = (point_t *)malloc(sizeof(point_t));
+        users_coord[i] = (struct point *)malloc(sizeof(struct point));
 
 		users_coord[i]->x = i;// ЗДЕСЬ ВСТАВИТЬ НАЧАЛЬНЫЕ КООРДЫ
 		users_coord[i]->y = i + 1;// ДЛЯ ИГРОКОВ
@@ -18,12 +18,12 @@ game_t * game_init(void)
     }
 
     // инициализация для первого слоя мобов
-    point_t **alien_coord = (point_t **)malloc(12 * sizeof(point_t *));
-    enemy_t **aliens = (enemy_t **)malloc(12 * sizeof(enemy_t*));
+    struct point **alien_coord = (struct point **)malloc(12 * sizeof(struct point *));
+    struct enemy **aliens = (struct enemy **)malloc(12 * sizeof(struct enemy*));
 
     for (int i = 0; i < 4; i++)
     {
-        alien_coord[i] = (point_t *)malloc(sizeof(point_t));
+        alien_coord[i] = (struct point *)malloc(sizeof(struct point));
 
 		alien_coord[i]->x = i;// ЗДЕСЬ ВСТАВИТЬ НАЧАЛЬНЫЕ КООРДЫ
 		alien_coord[i]->y = i + 1;// ДЛЯ МОБОВ
@@ -34,7 +34,7 @@ game_t * game_init(void)
     // инициализация для второго слоя мобов
     for (int i = 4; i < 8; i++)
     {
-        alien_coord[i] = (point_t *)malloc(sizeof(point_t));
+        alien_coord[i] = (struct point *)malloc(sizeof(struct point));
 
 		alien_coord[i]->x = i;// ЗДЕСЬ ВСТАВИТЬ НАЧАЛЬНЫЕ КООРДЫ
 		alien_coord[i]->y = i + 1;// ДЛЯ МОБОВ
@@ -45,7 +45,7 @@ game_t * game_init(void)
     // инициализация для третьего слоя мобов
     for (int i = 8; i < 12; i++)
     {
-        alien_coord[i] = (point_t *)malloc(sizeof(point_t));
+        alien_coord[i] = (struct point *)malloc(sizeof(struct point));
 
 		alien_coord[i]->x = i;// ЗДЕСЬ ВСТАВИТЬ НАЧАЛЬНЫЕ КООРДЫ
 		alien_coord[i]->y = i + 1;// ДЛЯ МОБОВ

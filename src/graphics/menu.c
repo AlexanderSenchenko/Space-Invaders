@@ -23,7 +23,7 @@ void check_terminal_size()
 
 void ncurses_init()
 {
-	check_terminal_size();
+	// check_terminal_size();
 	
 	initscr();
 	signal(SIGWINCH, sig_winch);

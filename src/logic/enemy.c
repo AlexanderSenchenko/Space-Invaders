@@ -1,8 +1,10 @@
 #include "../../include/logic/enemy.h"
 
-enemy_t * enemy_init(point_t * point, unsigned int type)
+extern char * enemy_models[];
+
+struct enemy * enemy_init(struct point * point, unsigned int type)
 {
-    enemy_t * alien = (enemy_t *)malloc(sizeof(enemy_t));
+    struct enemy * alien = (struct enemy *)malloc(sizeof(struct enemy));
 
     alien->coord = point;
     alien->bullet = NULL;
@@ -40,18 +42,17 @@ enemy_t * enemy_init(point_t * point, unsigned int type)
         
         //default:
             //error type
-
     }
 
     return alien;
 }
 
-bullet_t * enemy_fire(enemy_t * alien)
+struct bullet * enemy_fire(struct enemy * alien)
 {
     alien->bullet = bullet_init(alien->coord, ENEMY);
 }
 
-void enemy_move(enemy_t * alien, unsigned int where)
+void enemy_move(struct enemy * alien, unsigned int where)
 {
     switch(where)
     {
@@ -67,10 +68,9 @@ void enemy_move(enemy_t * alien, unsigned int where)
             alien->coord->y +=2;
             break;
     }
-
 }
 
-void enemy_dest(enemy_t *alien)
+void enemy_dest(struct enemy *alien)
 {
     free(alien);
 }

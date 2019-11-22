@@ -1,8 +1,10 @@
 #include "../../include/logic/bullet.h"
 
-bullet_t * bullet_init(point_t * point, int tag)
+extern char * bullet_models[];
+
+struct bullet * bullet_init(struct point * point, int tag)
 {
-    bullet_t * shot = (bullet_t *)malloc(sizeof(bullet_t));
+    struct bullet * shot = (struct bullet *)malloc(sizeof(struct bullet));
 
     shot->coord = point;
     shot->tag = tag;
@@ -24,7 +26,7 @@ bullet_t * bullet_init(point_t * point, int tag)
     return shot;
 }
 
-bool bullet_move(bullet_t * shot)
+bool bullet_move(struct bullet * shot)
 {   
 
     shot->coord->y -= 2;
@@ -39,11 +41,9 @@ bool bullet_move(bullet_t * shot)
         //
     else
     return true;
-    
-    
 }
 
-void bullet_dest(bullet_t * shot)
+void bullet_dest(struct bullet * shot)
 {
     free(shot);
 }

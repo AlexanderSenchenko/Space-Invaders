@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "models.h"
 #include "user.h"
 #include "enemy.h"
 
@@ -34,21 +33,19 @@ enum TAGS
     ENEMY
 };
 
-typedef struct point
+struct point
 {
     int x;
     int y;
-}point_t;
+};
 
-typedef struct game
+struct game
 {
-    player_t ** users;
-    enemy_t ** aliens;
+    struct player ** users;
+    struct enemy ** aliens;
     unsigned int score;
-}game_t;
+};
 
-
-game_t * game_init(void);
-
+struct game * game_init(void);
 
 #endif // _GAME_H_

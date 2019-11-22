@@ -11,23 +11,23 @@ enum enemy_types
     RARE
 };
 
-typedef struct enemy
+struct enemy
 {
-    bullet_t * bullet;
+    struct bullet * bullet;
     char * image;
-    point_t * coord;
+    struct point * coord;
     unsigned int hp;
     unsigned int type;
     unsigned int points;
     unsigned int damage;
-}enemy_t;
+};
 
-enemy_t * enemy_init(point_t *, unsigned int);
+struct enemy * enemy_init(struct point *, unsigned int);
 
-bullet_t * enemy_fire(enemy_t *);
+struct bullet * enemy_fire(struct enemy *);
 
-void enemy_move(enemy_t *, unsigned int);
+void enemy_move(struct enemy *, unsigned int);
 
-void enemy_dest(enemy_t *);
+void enemy_dest(struct enemy *);
 
 #endif // _ENEMY_H_

@@ -5,7 +5,7 @@
 
 int main(int argc, const char **argv)
 {
-	game_t * game = NULL;
+	struct game * game = NULL;
 
 	ncurses_init();
 	
@@ -13,8 +13,8 @@ int main(int argc, const char **argv)
 	menu_init(&main_menu);
 	
 	menu_move(&main_menu);
-	//game = game_init();
-	//draw(game);
+	game = game_init();
+	// draw(game);
 	
 	menu_destroy(&main_menu);
 	endwin();

@@ -4,6 +4,7 @@ BIN_PATH := bin
 BUILD_PATH := build
 SRC_PATH := src
 GRAPHICS_PATH := $(SRC_PATH)/graphics
+LOGIC_PATH := $(SRC_PATH)/logic
 
 COMPILE_FLAGS := -g
 
@@ -17,7 +18,7 @@ LIBS := $(NCURSES_LIBS)
 
 .PHONY: dirs clean
 
-SRC_FILES := $(SRC_PATH) $(GRAPHICS_PATH)
+SRC_FILES := $(SRC_PATH) $(GRAPHICS_PATH) $(LOGIC_PATH)
 SRC_FILES := $(wildcard $(addsuffix /*.$(SRC_EXT), $(SRC_FILES)))
 SRC_OBJECTS := $(addprefix $(BUILD_PATH)/, $(notdir $(SRC_FILES:.$(SRC_EXT)=.o)))
 
@@ -26,7 +27,7 @@ all: dirs $(BIN_PATH)/$(BIN_NAME)
 $(BIN_PATH)/$(BIN_NAME): $(SRC_OBJECTS)
 	$(CC) $(COMPILE_FLAGS) $^ -o $@ $(LIBS)
 
-VPATH := $(SRC_PATH) $(GRAPHICS_PATH)
+VPATH := $(SRC_PATH) $(GRAPHICS_PATH) $(LOGIC_PATH)
 $(BUILD_PATH)/%.o: %.$(SRC_EXT)
 	$(CC) $(COMPILE_FLAGS) $^ -c -o $@
 
