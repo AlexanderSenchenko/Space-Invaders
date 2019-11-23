@@ -22,7 +22,7 @@ struct enemy {
 
 struct enemy *enemy_init(struct point *, unsigned int);
 
-struct bullet *enemy_fire(struct enemy *);
+void enemy_fire(struct enemy *);
 
 void enemy_move(struct enemy *, unsigned int);
 

@@ -101,17 +101,15 @@ void menu_go_up(Menu *menu)
   }
 }
 
-void menu_move(Menu *menu, int argc, char **argv)
+int menu_move(Menu *menu, int argc, char **argv)
 {
-  int flag = 1;
 
-  while (flag) {
+  while (1) {
     int ch = getch();
 
     switch (ch) {
     case 'q':
-      flag = 0;
-      break;
+      return -1;
 
     case KEY_DOWN:
       menu_go_down(menu);
@@ -123,37 +121,38 @@ void menu_move(Menu *menu, int argc, char **argv)
 
     case '\n':
       if (menu_act_on_item(menu, argc, argv))
-        flag = 0;
+        return 0;
 
-      break;
+      else return -1;
 
     case ERR:
-      break;
+      return -1;
 
     default:
-      break;
+      return -1;
     }
   }
 }
 
 int menu_act_on_item(Menu *menu, int argc, char **argv)
 {
-  int close_program = 0;
+  int status = 0;
 
   switch (menu->current_idx) {
   case 0:
-    init_client(argc, argv);
-    reception();
+    //init_client(argc, argv);
+    //reception();
     // expectation();
+    status = 1;
     break;
 
   case 1:
-    close_program = 1;
+    status = -1;
     break;
 
   default:
     break;
   }
 
-  return close_program;
+  return status;
 }

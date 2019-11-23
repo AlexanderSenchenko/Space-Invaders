@@ -15,21 +15,34 @@ struct player *user_init(struct point *point)
   return user;
 }
 
-struct bullet *user_fire(struct player *user)
+void user_fire(struct player *user)
 {
   user->bullet = bullet_init(user->coord, USER);
 }
 
-void user_move(struct player *user, unsigned int where)
+void user_move(struct player *user, int where)
 {
   switch (where) {
-  case 0:
-    user->coord->x -= 2;
-    break;
+    case 'a':
+      user->coord->x -= 2;// поставить сколько надо
+      break;
 
-  case 1:
-    user->coord->x += 2;
-    break;
+    case 'd':
+      user->coord->x += 2;//
+      break;
+
+    case KEY_LEFT:
+      user->coord->x -= 2;//
+      break;
+
+    case KEY_RIGHT:
+      user->coord->x += 2;//
+      break;
+
+    case ' ':
+      user_fire(user);
+      break;
+
   }
 
 }
