@@ -122,14 +122,14 @@ int menu_move(Menu *menu, int argc, char **argv)
     case '\n':
       if (menu_act_on_item(menu, argc, argv))
         return 0;
-
-      else return -1;
+      else
+        return -1;
 
     case ERR:
-      return -1;
+      break;
 
     default:
-      return -1;
+      break;
     }
   }
 }
@@ -140,8 +140,8 @@ int menu_act_on_item(Menu *menu, int argc, char **argv)
 
   switch (menu->current_idx) {
   case 0:
-    //init_client(argc, argv);
-    //reception();
+    init_client(argc, argv);
+    reception();
     // expectation();
     status = 1;
     break;

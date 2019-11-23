@@ -3,7 +3,8 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include <curses.h>
+// не место в логике
+// #include <curses.h>
 
 #include "user.h"
 #include "enemy.h"

@@ -52,6 +52,8 @@ struct game *game_init(void)
   game->score = 0;
 }
 
+// curses тут не нужен
+/*
 void game_user_move(struct game * game)
 {
   int ch;
@@ -87,3 +89,4 @@ void game_process(struct game * game)
     game_user_move(game);
 
 }
+*/
