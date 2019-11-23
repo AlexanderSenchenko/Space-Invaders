@@ -55,7 +55,7 @@ void enemy_move(struct enemy *alien, int where)
 {
   switch (where) {
   case 0:
-    alien->coord->x -= 2; // поставить сколько надо 
+    alien->coord->x -= 2; // поставить сколько надо
     break;
 
   case 1:

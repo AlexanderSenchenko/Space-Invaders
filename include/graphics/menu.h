@@ -23,8 +23,8 @@ void menu_destroy(Menu *menu);
 
 void menu_go_up(Menu *menu);
 void menu_go_down(Menu *menu);
-int menu_move(Menu *menu, int, char **);
+int menu_move(Menu *menu);
 
-int menu_act_on_item(Menu *menu, int, char **);
+int menu_act_on_item(Menu *menu);
 
 #endif // _MENU_H_

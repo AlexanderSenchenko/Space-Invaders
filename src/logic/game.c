@@ -58,28 +58,27 @@ void game_user_move(struct game * game)
 {
   int ch;
   while(ch = getch()) {
-  switch(ch) 
-  {
-      case 'a':
-        user_move(game->user,ch);
-        break;
+    switch(ch) {
+    case 'a':
+      user_move(game->user,ch);
+      break;
 
-      case 'd':
-        user_move(game->user,ch);
-        break;
+    case 'd':
+      user_move(game->user,ch);
+      break;
 
-      case KEY_LEFT:
-        user_move(game->user,ch);
-        break;
-      
-      case KEY_RIGHT:
-        user_move(game->user,ch);
-        break;
-      
-      case ' ':
-        user_fire(game->user);
-        break;
-  }  
+    case KEY_LEFT:
+      user_move(game->user,ch);
+      break;
+
+    case KEY_RIGHT:
+      user_move(game->user,ch);
+      break;
+
+    case ' ':
+      user_fire(game->user);
+      break;
+    }
 
   }
 }

@@ -2,6 +2,7 @@
 #include <curses.h>
 #include "../include/graphics/menu.h"
 #include "../include/logic/game.h"
+#include "../include/network/client.h"
 
 int main(int argc, char **argv)
 {
@@ -11,36 +12,55 @@ int main(int argc, char **argv)
   Menu main_menu;
   menu_init(&main_menu);
 
-  if (0 == menu_move(&main_menu, argc, argv))
-	{
-    game = game_init();
+  // game = game_init();
+
+  int ret_act = menu_move(&main_menu);
+  menu_destroy(&main_menu);
+
+  if (ret_act == 0) {
     /*
-    void draw(game * game)
-    {
-        рисуем пользователя
-        game->user->image
+     * экран ожидания(подключение к серверу)
+     */
 
-        рисуем врагов 
-        for(int i = 0; i < 12; i++)
-        {
-          сдвинуться на 
-          game->aliens[i]->coord->x;
-          game->aliens[i]->coord->y;
-          нарисовать
-          game->aliens[i]->image
-        }
+    init_client(argc, argv);
 
-        game_process(game);
-        
+    int stat_connect_to_serv = 0;
+
+    /*
+     * stat_connect_to_serv != 1 временно, пока, нет функционала
+     * подключение второго клиента
+     * stat_connect_to_serv != 2 в будущем
+     */
+    while (stat_connect_to_serv != 1) {
+      stat_connect_to_serv = reception();
+
+      // TODO: описать статусы подключения к серверу в define
+      switch (stat_connect_to_serv) {
+      case 1: // подключен к серверу, ожидание второго игрока
+        /*
+         * экран ожидания(подключение к второго игрока к серверу)
+         */
+        break;
+
+      case 2: // сообщение о там, что игру можно начать
+        /*
+         * возможно, тут что-то происходит
+         */
+        break;
+
+      default:
+        /*
+         * возможно сообщение об ошибке подключения к серверу
+         */
+        break;
+      }
     }
 
-    
-  
-
-  */
+    /*
+     * отрисовать поле игры
+     */
   }
 
-  menu_destroy(&main_menu);
   endwin();
 
   return 0;
