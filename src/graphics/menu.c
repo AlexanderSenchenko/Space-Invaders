@@ -190,7 +190,8 @@ WINDOW *draw_game_field()
   return wnd;
 }
 
-void erase_entity(WINDOW *game_field, const struct point *entity_positon, const char *entity_model)
+void erase_entity(WINDOW *game_field, const struct point *entity_positon,
+                  const char *entity_model)
 {
   int len = strlen(entity_model);
   wmove(game_field, entity_positon->x, entity_positon->y);
@@ -229,6 +230,7 @@ int get_player_action_from_keyboard(WINDOW *game_field,
   case KEY_LEFT://игрок сдвинулся влево
     erase_entity(game_field, player_positon, player_model);
     //обновление координат
+    user_move(player_positon, MOVE_LEFT);
     draw_entity(game_field, player_positon, player_model);
     //отсылка инфы серверу
     break;
@@ -236,6 +238,7 @@ int get_player_action_from_keyboard(WINDOW *game_field,
   case KEY_RIGHT://игрок сдвинулся вправо
     erase_entity(game_field, player_positon, player_model);
     //обновление координат
+    user_move(player_positon, MOVE_RIGHT);
     draw_entity(game_field, player_positon, player_model);
     //отсылка инфы серверу
     break;
