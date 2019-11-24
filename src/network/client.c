@@ -10,19 +10,41 @@
 #include <netinet/udp.h>
 #include <arpa/inet.h>
 #include "../../include/network/client.h"
+#include "../../include/logic/game.h"
+#include "../../include/logic/game.h"
+#include "../../include/logic/user.h"
+#include "../../include/logic/enemy.h"
+#include "../../include/logic/bullet.h"
 
 struct serv_information {
   unsigned int status;
 };
 
+struct message_transmitting{
+  unsigned int status;
+  unsigned int id_user;
+  void *data;
+};
+
+/*Теги для status, 1-ая группа технические*/
+#define CONNECT 1
+#define STRT_GS 2
+#define ERR_CONN 3
+#define END_GS 9
+
+/*2-ая, группа игровой направлености*/
+#define MV_LEFT 30
+#define MV_RIGHT 31
+
 struct sockaddr_in addr_server;
 struct serv_information information_to_player;
 struct serv_information information_from_player;
-
+struct message_transmitting message;
 socklen_t addr_in_size = sizeof(struct sockaddr_in);
 pthread_t receiver_from_server;
 
 int file_descrip_client;
+int id;
 
 void init_client(int argc, char **argv)
 {
@@ -89,12 +111,19 @@ int wait_start_of_game()
 
 void expectation()
 {
+  struct game game_ses;
+  unsigned int id;
   int flag = 1;
+
+  recv_message(&game_ses, NULL, NULL, NULL);
+  id = message.id_user;
+
   recvfrom(file_descrip_client, &information_to_player,
            sizeof(information_to_player), 0,
            (struct sockaddr *)&addr_server, &addr_in_size);
 
-  if (information_to_player.status == 2) {
+  if (information_to_player.status == STRT_GS) {
+
     //game_session();
   } else {
     while (flag == 1) {
@@ -102,11 +131,43 @@ void expectation()
                sizeof(information_to_player), 0,
                (struct sockaddr *)&addr_server, &addr_in_size);
 
-      if (information_to_player.status == 2) {
+      if (information_to_player.status == STRT_GS) {
         flag = 0;
       }
     }
 
     //game_session();
+  }
+}
+
+void send_message(int status, int id_user, void *data)
+{
+  message.status = status;
+  message.id_user = id_user;
+  message.data = &data;
+  
+  sendto(file_descrip_client, &message,
+         sizeof(message), 0,
+         (struct sockaddr *)&addr_server, addr_in_size);/*надо посмотреть id_user*/
+}
+
+void recv_message(struct game *game_mess, struct enemy * enemy_mess,
+                  struct player *user_mess, struct bullet * bullet__mess)
+{
+  recvfrom(file_descrip_client, &message,
+         sizeof(message), 0,
+         (struct sockaddr *)&addr_server, &addr_in_size);
+ 
+  switch(message.status) {
+  case STRT_GS:
+    break;
+  
+  case MV_LEFT:
+    break;
+  
+  case MV_RIGHT:
+    break;
+  
+  /*И другие*/
   }
 }

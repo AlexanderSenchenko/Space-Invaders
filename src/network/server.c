@@ -10,21 +10,37 @@
 #include <netinet/udp.h>
 #include <arpa/inet.h>
 #include "../../include/network/server.h"
+#include "../../include/logic/game.h"
+#include "../../include/logic/user.h"
+#include "../../include/logic/enemy.h"
+#include "../../include/logic/bullet.h"
 
 #define MAX_CLIENT 10
 #define MAX_SESSION 3
+/*Теги для status, 1-ая группа технические*/
+#define CONNECT 1
+#define STRT_GS 2
+#define ERR_CONN 3
+#define END_GS 9
+/*2-ая, группа игровой направлености*/
+#define MV_LEFT 30
+#define MV_RIGHT 31
+
 
 struct serv_information {
   unsigned int status;
-  /* Informing the client: 1 - successful connection and queuing
-  2 - Start a game session
-  4 - End of session
-  8 - Reconnect (after the end of the session)*/
 };
 
+struct message_transmitting{
+  unsigned int status;
+  unsigned int id_user;
+  void *data;
+};
+
+
+struct message_transmitting message;
 struct sockaddr_in addr_server;
 struct sockaddr_in addr_client[MAX_CLIENT];
-struct sockaddr_in client_session[MAX_SESSION][2];
 struct serv_information information_to_player;
 struct serv_information information_from_player;
 socklen_t addr_in_size = sizeof(struct sockaddr_in);
@@ -34,6 +50,7 @@ pthread_mutex_t latch = PTHREAD_MUTEX_INITIALIZER;
 int counter_player = 0;  // Counter responsible for counting connected players
 int counter_session = 0;
 int file_descrip_server;
+
 
 void init_server(int argc, char **argv)
 {
@@ -61,7 +78,7 @@ void first_reception()  // Первый контакт, запуск дальн�
            sizeof(information_from_player), 0,
            (struct sockaddr *)&addr_client[counter_player], &addr_in_size);
 
-  information_to_player.status = 1;
+  information_to_player.status = CONNECT;
   sendto(file_descrip_server, &information_to_player,
          sizeof(information_to_player), 0,
          (struct sockaddr *)&addr_client[0], addr_in_size);
@@ -79,7 +96,7 @@ void reception_application()
              (struct sockaddr *)&addr_client[counter_player],
              &addr_in_size);
 
-    information_to_player.status = 1;
+    information_to_player.status = CONNECT;
     sendto(file_descrip_server, &information_to_player,
            sizeof(information_to_player), 0,
            (struct sockaddr *)&addr_client[counter_player], addr_in_size);
@@ -96,19 +113,17 @@ void create_new_session()
 {
   int i;
   int number_session;
+  int id_user;
+  struct game game_ses;
+  struct sockaddr_in addr_client_session[2];
 
-  if ((counter_player >= 0) && (counter_session < MAX_SESSION)) {
-    information_to_player.status = 2;
-
-    sendto(file_descrip_server, &information_to_player,
-           sizeof(information_to_player), 0,
-           (struct sockaddr *)&addr_client[0], addr_in_size);
-
-    sendto(file_descrip_server, &information_to_player,
-           sizeof(information_to_player), 0,
-           (struct sockaddr *)&addr_client[1],
-           addr_in_size);
-
+  if ((counter_player > 1) && (counter_session < MAX_SESSION)) {
+    send_message(STRT_GS, 0, (void *)&game_ses);
+    send_message(STRT_GS, 1, (void *)&game_ses);
+    
+    addr_client_session[0] = addr_client[0];
+    addr_client_session[1] = addr_client[1];
+    
     /*
      * Create a process or thread as a game session.
      * We give them a fork and shift the structure by 2
@@ -124,5 +139,34 @@ void create_new_session()
     counter_player = counter_player - 2;
     counter_session++;
     pthread_mutex_unlock(&latch);
+  }
+}
+
+void send_message(int status, int id_user, void *data)
+{
+  message.status = status;
+  message.id_user = id_user;
+  message.data = &data;
+  
+  sendto(file_descrip_server, &message,
+         sizeof(message), 0,
+         (struct sockaddr *)&addr_client[id_user], addr_in_size);/*надо посмотреть id_user*/
+}
+
+void recv_message(int id_user, struct enemy * enemy_mess,
+                  struct player *user_mess, struct bullet * bullet__mess)
+{
+  recvfrom(file_descrip_server, &message,
+           sizeof(message), 0,
+           (struct sockaddr *)&addr_client[id_user], &addr_in_size);
+  
+  switch(message.status) {
+  case MV_LEFT:
+    break;
+  
+  case MV_RIGHT:
+    break;
+  
+  /*И другие*/
   }
 }
