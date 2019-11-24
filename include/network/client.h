@@ -17,14 +17,15 @@ struct message_transmitting{
 };
 
 /*Теги для status, 1-ая группа технические*/
-#define CONNECT 1
-#define STRT_GS 2
-#define ERR_CONN 3
-#define END_GS 9
+#define CONNECT   1
+#define STRT_GS   2
+#define ERR_CONN  3
+#define END_GS    9
 
 /*2-ая, группа игровой направлености*/
-#define MV_LEFT 30
-#define MV_RIGHT 31
+#define MV_LEFT   30
+#define MV_RIGHT  31
+#define MOVE      32
 
 void init_client(int, char **);
 int reception();

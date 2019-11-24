@@ -4,6 +4,7 @@
 #include <sys/ioctl.h>
 #include <string.h>
 #include "../../include/graphics/menu.h"
+#include "../../include/network/client.h"
 
 void sig_winch(int signo)
 {
@@ -234,18 +235,19 @@ int get_player_action_from_keyboard(WINDOW *game_field,
     erase_entity(game_field, game->user->coord, game->user->image);
 
     //обновление координат
-    user_move(game->user->coord, MOVE_LEFT);
+    user_move(game->user, MOVE_LEFT);
 
     draw_entity(game_field, game->user->coord, game->user->image);
 
     //отсылка инфы серверу
+    // send_message();
     break;
 
   case KEY_RIGHT://игрок сдвинулся вправо
     erase_entity(game_field, game->user->coord, game->user->image);
 
     //обновление координат
-    user_move(game->user->coord, MOVE_RIGHT);
+    user_move(game->user, MOVE_RIGHT);
 
     draw_entity(game_field, game->user->coord, game->user->image);
 
