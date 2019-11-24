@@ -1,9 +1,12 @@
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
-#icnlude "../logic/game.h"
+#include "../logic/game.h"
+#include "../logic/user.h"
+#include "../logic/enemy.h"
+#include "../logic/bullet.h"
 void init_client(int, char **);
 void reception();
 void expectation();
-void recv_message(struct game *, struct enemy *, struct user *, struct bullet *)
-void send_message(int, int, void *)
+void recv_message(struct game *, struct enemy *, struct player *, struct bullet *);
+void send_message(int, int, void *);
 #endif // _CLIENT_H_

@@ -15,7 +15,7 @@
 struct serv_information {
   unsigned int status;
 };
-struct message_transmitting{
+struct message_transmitting {
   unsigned int status;
   unsigned int id_user;
   void *data;
@@ -129,20 +129,25 @@ void send_message(int status, int id_user, void *data)
          sizeof(message), 0,
          (struct sockaddr *)&addr_server, &addr_in_size);/*надо посмотреть id_user*/
 }
-void recv_message(struct game *game_mess, struct enemy * enemy_mess, struct user *user_mess, struct bullet * bullet__mess)
+void recv_message(struct game *game_mess, struct enemy *enemy_mess, struct player *user_mess, struct bullet *bullet__mess)
 {
   recvfrom(file_descrip_server, &message,
-         sizeof(message), 0,
-         (struct sockaddr *)&addr_server, addr_in_size);
-  switch(message.status)
-  {
-    case: STRT_GS
+           sizeof(message), 0,
+           (struct sockaddr *)&addr_server, addr_in_size);
+
+  switch (message.status) {
+  case:
+    STRT_GS
     game_mess  = (struct game *)message.data;
     break;
-    case: MV_LEFT
+
+  case:
+    MV_LEFT
 
     break;
-    case: MV_RIGHT
+
+  case:
+    MV_RIGHT
 
     break;
     /*И другие*/
