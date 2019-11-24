@@ -27,4 +27,7 @@ int menu_move(Menu *menu);
 
 int menu_act_on_item(Menu *menu);
 
+void draw_waiting_for_connection();
+void draw_waiting_for_player();
+
 #endif // _MENU_H_

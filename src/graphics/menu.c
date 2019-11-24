@@ -35,6 +35,7 @@ void ncurses_init()
   refresh();
   init_pair(1, COLOR_YELLOW, COLOR_BLUE);
   init_pair(2, COLOR_YELLOW, COLOR_CYAN);
+  init_pair(3, COLOR_WHITE, COLOR_BLACK);
   keypad(stdscr, 1);
   nodelay(stdscr, 1);
   bkgd(COLOR_PAIR(2));
@@ -151,4 +152,21 @@ int menu_act_on_item(Menu *menu)
   }
 
   return status;
+}
+
+void draw_waiting_for_connection()
+{
+  erase();
+  bkgd(COLOR_PAIR(3));
+  move(TERMINAL_HEIGHT - 1, 0);
+  printw("Waiting for server response");
+  refresh();
+}
+
+void draw_waiting_for_player()
+{
+  erase();
+  move(TERMINAL_HEIGHT - 1, 0);
+  printw("Waiting for second player to connect");
+  refresh();
 }

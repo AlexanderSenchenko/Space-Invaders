@@ -21,6 +21,7 @@ int main(int argc, char **argv)
     /*
      * экран ожидания(подключение к серверу)
      */
+    draw_waiting_for_connection();
 
     init_client(argc, argv);
 
@@ -40,6 +41,7 @@ int main(int argc, char **argv)
         /*
          * экран ожидания(подключение к второго игрока к серверу)
          */
+        draw_waiting_for_player();
         break;
 
       case 2: // сообщение о там, что игру можно начать
