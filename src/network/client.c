@@ -19,16 +19,19 @@
 struct serv_information {
   unsigned int status;
 };
+
 struct message_transmitting{
   unsigned int status;
   unsigned int id_user;
   void *data;
 };
+
 /*Теги для status, 1-ая группа технические*/
 #define CONNECT 1
 #define STRT_GS 2
 #define ERR_CONN 3
 #define END_GS 9
+
 /*2-ая, группа игровой направлености*/
 #define MV_LEFT 30
 #define MV_RIGHT 31
@@ -42,6 +45,7 @@ pthread_t receiver_from_server;
 
 int file_descrip_client;
 int id;
+
 void init_client(int argc, char **argv)
 {
   addr_server.sin_family = AF_INET;
@@ -74,7 +78,6 @@ int reception()
   return information_to_player.status;
 }
 
-
 void *receiver() /*Заготовка*/
 {
   while (1) {
@@ -96,6 +99,15 @@ void *receiver() /*Заготовка*/
   i_error = pthread_join(receiver_from_server, &status);
   error_output(ERROR_PTHREAD);
 }*/
+
+int wait_start_of_game()
+{
+  recvfrom(file_descrip_client, &information_to_player,
+           sizeof(information_to_player), 0,
+           (struct sockaddr *)&addr_server, &addr_in_size);
+
+  return information_to_player.status;
+}
 
 void expectation()
 {
@@ -127,31 +139,35 @@ void expectation()
     //game_session();
   }
 }
+
 void send_message(int status, int id_user, void *data)
 {
   message.status = status;
   message.id_user = id_user;
   message.data = &data;
+  
   sendto(file_descrip_client, &message,
          sizeof(message), 0,
          (struct sockaddr *)&addr_server, addr_in_size);/*надо посмотреть id_user*/
 }
-void recv_message(struct game *game_mess, struct enemy * enemy_mess, struct player *user_mess, struct bullet * bullet__mess)
+
+void recv_message(struct game *game_mess, struct enemy * enemy_mess,
+                  struct player *user_mess, struct bullet * bullet__mess)
 {
   recvfrom(file_descrip_client, &message,
          sizeof(message), 0,
          (struct sockaddr *)&addr_server, &addr_in_size);
-  switch(message.status)
-  {
-    case STRT_GS:
-
+ 
+  switch(message.status) {
+  case STRT_GS:
     break;
-    case MV_LEFT:
-
+  
+  case MV_LEFT:
     break;
-    case MV_RIGHT:
-
+  
+  case MV_RIGHT:
     break;
-    /*И другие*/
+  
+  /*И другие*/
   }
 }

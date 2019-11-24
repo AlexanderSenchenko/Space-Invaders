@@ -10,25 +10,24 @@
 #define STATUS_PLAY 0
 #define STATUS_EXIT 1
 
-struct Menu_ {
+struct Menu {
   WINDOW *menu_wnd;
   WINDOW *menu_items[NUM_MENU_ITEMS];
   int current_idx;
 };
-typedef struct Menu_ Menu;
 
 void sig_winch(int signo);
 void check_terminal_size();
 
 void ncurses_init();
-void menu_init(Menu *menu);
-void menu_destroy(Menu *menu);
+void menu_init(struct Menu *menu);
+void menu_destroy(struct Menu *menu);
 
-void menu_go_up(Menu *menu);
-void menu_go_down(Menu *menu);
-int menu_move(Menu *menu);
+void menu_go_up(struct Menu *menu);
+void menu_go_down(struct Menu *menu);
+int menu_move(struct Menu *menu);
 
-int menu_act_on_item(Menu *menu);
+int menu_act_on_item(struct Menu *menu);
 
 int menu_do();
 

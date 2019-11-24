@@ -43,7 +43,7 @@ void ncurses_init()
   refresh();
 }
 
-void menu_init(Menu *menu)
+void menu_init(struct Menu *menu)
 {
   const int menu_box_offset = 2;
   int menu_width = 4 + menu_box_offset;
@@ -73,7 +73,7 @@ void menu_init(Menu *menu)
   wrefresh(menu->menu_wnd);
 }
 
-void menu_destroy(Menu *menu)
+void menu_destroy(struct Menu *menu)
 {
   for (int i = 0; i < NUM_MENU_ITEMS; i++) {
     delwin(menu->menu_items[i]);
@@ -82,7 +82,7 @@ void menu_destroy(Menu *menu)
   delwin(menu->menu_wnd);
 }
 
-void menu_go_down(Menu *menu)
+void menu_go_down(struct Menu *menu)
 {
   if (menu->current_idx + 1 < NUM_MENU_ITEMS) {
     wbkgd(menu->menu_items[menu->current_idx], COLOR_PAIR(1));
@@ -92,7 +92,7 @@ void menu_go_down(Menu *menu)
   }
 }
 
-void menu_go_up(Menu *menu)
+void menu_go_up(struct Menu *menu)
 {
   if (menu->current_idx - 1 >= 0) {
     wbkgd(menu->menu_items[menu->current_idx], COLOR_PAIR(1));
@@ -102,7 +102,7 @@ void menu_go_up(Menu *menu)
   }
 }
 
-int menu_move(Menu *menu)
+int menu_move(struct Menu *menu)
 {
 
   while (1) {
@@ -132,7 +132,7 @@ int menu_move(Menu *menu)
   }
 }
 
-int menu_act_on_item(Menu *menu)
+int menu_act_on_item(struct Menu *menu)
 {
   int status = -1;
 
@@ -154,7 +154,7 @@ int menu_act_on_item(Menu *menu)
 
 int menu_do()
 {
-  Menu main_menu;
+  struct Menu main_menu;
   menu_init(&main_menu);
   int player_choice = menu_move(&main_menu);
   menu_destroy(&main_menu);
