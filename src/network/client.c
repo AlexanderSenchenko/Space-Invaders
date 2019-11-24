@@ -11,11 +11,15 @@
 #include <arpa/inet.h>
 #include "../../include/network/client.h"
 #include "../../include/logic/game.h"
+#include "../../include/logic/game.h"
+#include "../../include/logic/user.h"
+#include "../../include/logic/enemy.h"
+#include "../../include/logic/bullet.h"
 
 struct serv_information {
   unsigned int status;
 };
-struct message_transmitting {
+struct message_transmitting{
   unsigned int status;
   unsigned int id_user;
   void *data;
@@ -54,10 +58,10 @@ void init_client(int argc, char **argv)
   }
 }
 
-void reception()
+int reception()
 {
   file_descrip_client = socket(AF_INET, SOCK_DGRAM, 0);
-  information_from_player.status = CONNECT;
+  information_from_player.status = 1;
 
   sendto(file_descrip_client, &information_from_player,
          sizeof(information_from_player), 0,
@@ -66,7 +70,10 @@ void reception()
   recvfrom(file_descrip_client, &information_to_player,
            sizeof(information_to_player), 0,
            (struct sockaddr *)&addr_server, &addr_in_size);
+
+  return information_to_player.status;
 }
+
 
 void *receiver() /*Заготовка*/
 {
@@ -96,7 +103,7 @@ void expectation()
   unsigned int id;
   int flag = 1;
 
-  recv_message(game_ses, NULL, NULL, NULL);
+  recv_message(&game_ses, NULL, NULL, NULL);
   id = message.id_user;
 
   recvfrom(file_descrip_client, &information_to_player,
@@ -127,27 +134,22 @@ void send_message(int status, int id_user, void *data)
   message.data = &data;
   sendto(file_descrip_client, &message,
          sizeof(message), 0,
-         (struct sockaddr *)&addr_server, &addr_in_size);/*надо посмотреть id_user*/
+         (struct sockaddr *)&addr_server, addr_in_size);/*надо посмотреть id_user*/
 }
-void recv_message(struct game *game_mess, struct enemy *enemy_mess, struct player *user_mess, struct bullet *bullet__mess)
+void recv_message(struct game *game_mess, struct enemy * enemy_mess, struct player *user_mess, struct bullet * bullet__mess)
 {
-  recvfrom(file_descrip_server, &message,
-           sizeof(message), 0,
-           (struct sockaddr *)&addr_server, addr_in_size);
-
-  switch (message.status) {
-  case:
-    STRT_GS
-    game_mess  = (struct game *)message.data;
-    break;
-
-  case:
-    MV_LEFT
+  recvfrom(file_descrip_client, &message,
+         sizeof(message), 0,
+         (struct sockaddr *)&addr_server, &addr_in_size);
+  switch(message.status)
+  {
+    case STRT_GS:
 
     break;
+    case MV_LEFT:
 
-  case:
-    MV_RIGHT
+    break;
+    case MV_RIGHT:
 
     break;
     /*И другие*/
