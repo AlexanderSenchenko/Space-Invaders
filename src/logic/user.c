@@ -51,6 +51,35 @@ void user_move(struct player *user, int where)
 }
 */
 
+void user_move(struct point *positon, int where)
+{
+  int new_coord_y = positon->y;
+
+  // длину модельки стоит как-то вычислять я не задавать константно
+  int len_user_model = 5;
+
+  switch (where) {
+  case MOVE_RIGHT:
+    new_coord_y += 1;
+
+    if (new_coord_y <= TERMINAL_WIDTH - len_user_model)
+      positon->y = new_coord_y;
+
+    break;
+
+  case MOVE_LEFT:
+    new_coord_y -= 1;
+
+    if (new_coord_y >= 0)
+      positon->y = new_coord_y;
+
+    break;
+
+  default:
+    break;
+  }
+}
+
 void user_dest(struct player *user)
 {
   free(user);
