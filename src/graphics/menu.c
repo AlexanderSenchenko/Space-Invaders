@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/ioctl.h>
+#include <string.h>
 #include "../../include/graphics/menu.h"
 
 void sig_winch(int signo)
@@ -35,6 +36,7 @@ void ncurses_init()
   refresh();
   init_pair(1, COLOR_YELLOW, COLOR_BLUE);
   init_pair(2, COLOR_YELLOW, COLOR_CYAN);
+  init_pair(3, COLOR_WHITE, COLOR_BLACK);
   keypad(stdscr, 1);
   nodelay(stdscr, 1);
   bkgd(COLOR_PAIR(2));
@@ -108,7 +110,7 @@ int menu_move(Menu *menu)
 
     switch (ch) {
     case 'q':
-      return -1;
+      return STATUS_EXIT;
 
     case KEY_DOWN:
       menu_go_down(menu);
@@ -119,10 +121,7 @@ int menu_move(Menu *menu)
       break;
 
     case '\n':
-      if (menu_act_on_item(menu))
-        return 0;
-      else
-        return -1;
+      return (menu_act_on_item(menu));
 
     case ERR:
       break;
@@ -135,15 +134,15 @@ int menu_move(Menu *menu)
 
 int menu_act_on_item(Menu *menu)
 {
-  int status = 0;
+  int status = -1;
 
   switch (menu->current_idx) {
   case 0:
-    status = 1;
+    status = STATUS_PLAY;
     break;
 
   case 1:
-    status = -1;
+    status = STATUS_EXIT;
     break;
 
   default:
@@ -151,4 +150,106 @@ int menu_act_on_item(Menu *menu)
   }
 
   return status;
+}
+
+int menu_do()
+{
+  Menu main_menu;
+  menu_init(&main_menu);
+  int player_choice = menu_move(&main_menu);
+  menu_destroy(&main_menu);
+
+  return player_choice;
+}
+
+void draw_waiting_for_connection()
+{
+  erase();
+  bkgd(COLOR_PAIR(3));
+  move(TERMINAL_HEIGHT - 1, 0);
+  printw("Waiting for server response");
+  refresh();
+}
+
+void draw_waiting_for_player()
+{
+  erase();
+  move(TERMINAL_HEIGHT - 1, 0);
+  printw("Waiting for second player to connect");
+  refresh();
+}
+
+WINDOW *draw_game_field()
+{
+  erase();
+  WINDOW *wnd = newwin(TERMINAL_HEIGHT, TERMINAL_WIDTH, 0, 0);
+  wbkgd(wnd, COLOR_PAIR(3));
+  refresh();
+  wrefresh(wnd);
+
+  return wnd;
+}
+
+void erase_entity(WINDOW *game_field, const struct point *entity_positon, const char *entity_model)
+{
+  int len = strlen(entity_model);
+  wmove(game_field, entity_positon->x, entity_positon->y);
+
+  for (int i = 0; i < len; i++) {
+    waddch(game_field, ' ');
+  }
+
+  wrefresh(game_field);
+}
+
+void draw_entity(WINDOW *game_field, const struct point *entity_positon,
+                 const char *entity_model)
+{
+  int len = strlen(entity_model);
+  wmove(game_field, entity_positon->x, entity_positon->y);
+
+  for (int i = 0; i < len; i++) {
+    waddch(game_field, entity_model[i]);
+  }
+
+  wrefresh(game_field);
+}
+
+int get_player_action_from_keyboard(WINDOW *game_field,
+                                    struct point *player_positon, struct point *bullet_positon,
+                                    const char *player_model, const char *bullet_model)
+{
+  int ch = getch();
+
+  switch (ch) {
+  case 'q':
+    return STATUS_EXIT;
+    break;
+
+  case KEY_LEFT://игрок сдвинулся влево
+    erase_entity(game_field, player_positon, player_model);
+    //обновление координат
+    draw_entity(game_field, player_positon, player_model);
+    //отсылка инфы серверу
+    break;
+
+  case KEY_RIGHT://игрок сдвинулся вправо
+    erase_entity(game_field, player_positon, player_model);
+    //обновление координат
+    draw_entity(game_field, player_positon, player_model);
+    //отсылка инфы серверу
+    break;
+
+  case ' '://игрок выстрелил
+    //создание координат для снаряда
+    draw_entity(game_field, bullet_positon, bullet_model);
+
+  //отсылка инфы серверу
+
+
+  default:
+    break;
+  }
+
+  return STATUS_PLAY;
 }

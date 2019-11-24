@@ -6,21 +6,26 @@
 
 int main(int argc, char **argv)
 {
+  char *enemy_model = "###";
+  char *player_model = "###";
+  char *bullet_model = "###";
+  struct point enemy_position;
+  struct point player_position;
+  struct point bullet_position;
+
   struct game *game = NULL;
   ncurses_init();
 
-  Menu main_menu;
-  menu_init(&main_menu);
-
   // game = game_init();
 
-  int ret_act = menu_move(&main_menu);
-  menu_destroy(&main_menu);
+  int ret_act = menu_do();
 
-  if (ret_act == 0) {
+  if (ret_act == STATUS_PLAY) {
     /*
      * экран ожидания(подключение к серверу)
      */
+
+    draw_waiting_for_connection();
 
     init_client(argc, argv);
 
@@ -40,6 +45,7 @@ int main(int argc, char **argv)
         /*
          * экран ожидания(подключение к второго игрока к серверу)
          */
+        draw_waiting_for_player();
         break;
 
       case 2: // сообщение о там, что игру можно начать
@@ -59,6 +65,23 @@ int main(int argc, char **argv)
     /*
      * отрисовать поле игры
      */
+    /*
+    Функция draw_game_field не полная. По идее должна принимать позиции врага
+    и игроков, а также моделки для отрисовки
+    */
+    WINDOW *game_field = draw_game_field();
+
+    while (1) {
+      //читаем с клавы
+      if (STATUS_EXIT == get_player_action_from_keyboard(game_field,
+          &player_position, &bullet_position, player_model, bullet_model)) {
+        break;
+      }
+
+      //смотрим (неблокирующе) есть ли пакет от сервера
+    }
+
+    delwin(game_field);
   }
 
   endwin();
