@@ -215,15 +215,15 @@ void draw_entity(WINDOW *game_field, const struct point *entity_positon,
   wrefresh(game_field);
 }
 
-void get_player_action_from_keyboard(WINDOW *game_field,
-                                     struct point *player_positon, struct point *bullet_positon,
-                                     const char *player_model, const char *bullet_model)
+int get_player_action_from_keyboard(WINDOW *game_field,
+                                    struct point *player_positon, struct point *bullet_positon,
+                                    const char *player_model, const char *bullet_model)
 {
   int ch = getch();
 
   switch (ch) {
   case 'q':
-    exit(0);
+    return STATUS_EXIT;
     break;
 
   case KEY_LEFT://игрок сдвинулся влево
@@ -250,4 +250,6 @@ void get_player_action_from_keyboard(WINDOW *game_field,
   default:
     break;
   }
+
+  return STATUS_PLAY;
 }

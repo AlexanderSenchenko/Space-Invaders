@@ -73,11 +73,15 @@ int main(int argc, char **argv)
 
     while (1) {
       //читаем с клавы
-      get_player_action_from_keyboard(game_field, &player_position,
-                                      &bullet_position, player_model, bullet_model);
+      if (STATUS_EXIT == get_player_action_from_keyboard(game_field,
+          &player_position, &bullet_position, player_model, bullet_model)) {
+        break;
+      }
 
       //смотрим (неблокирующе) есть ли пакет от сервера
     }
+
+    delwin(game_field);
   }
 
   endwin();
