@@ -52,32 +52,33 @@ struct game *game_init(void)
   game->score = 0;
 }
 
+// curses тут не нужен
+/*
 void game_user_move(struct game * game)
 {
   int ch;
   while(ch = getch()) {
-  switch(ch) 
-  {
-      case 'a':
-        user_move(game->user,ch);
-        break;
+    switch(ch) {
+    case 'a':
+      user_move(game->user,ch);
+      break;
 
-      case 'd':
-        user_move(game->user,ch);
-        break;
+    case 'd':
+      user_move(game->user,ch);
+      break;
 
-      case KEY_LEFT:
-        user_move(game->user,ch);
-        break;
-      
-      case KEY_RIGHT:
-        user_move(game->user,ch);
-        break;
-      
-      case ' ':
-        user_fire(game->user);
-        break;
-  }  
+    case KEY_LEFT:
+      user_move(game->user,ch);
+      break;
+
+    case KEY_RIGHT:
+      user_move(game->user,ch);
+      break;
+
+    case ' ':
+      user_fire(game->user);
+      break;
+    }
 
   }
 }
@@ -87,3 +88,4 @@ void game_process(struct game * game)
     game_user_move(game);
 
 }
+*/

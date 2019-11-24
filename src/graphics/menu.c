@@ -3,7 +3,6 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 #include "../../include/graphics/menu.h"
-#include "../../include/network/client.h"
 
 void sig_winch(int signo)
 {
@@ -101,7 +100,7 @@ void menu_go_up(Menu *menu)
   }
 }
 
-int menu_move(Menu *menu, int argc, char **argv)
+int menu_move(Menu *menu)
 {
 
   while (1) {
@@ -120,29 +119,26 @@ int menu_move(Menu *menu, int argc, char **argv)
       break;
 
     case '\n':
-      if (menu_act_on_item(menu, argc, argv))
+      if (menu_act_on_item(menu))
         return 0;
-
-      else return -1;
+      else
+        return -1;
 
     case ERR:
-      return -1;
+      break;
 
     default:
-      return -1;
+      break;
     }
   }
 }
 
-int menu_act_on_item(Menu *menu, int argc, char **argv)
+int menu_act_on_item(Menu *menu)
 {
   int status = 0;
 
   switch (menu->current_idx) {
   case 0:
-    //init_client(argc, argv);
-    //reception();
-    // expectation();
     status = 1;
     break;
 

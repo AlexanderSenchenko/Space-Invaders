@@ -24,7 +24,7 @@ struct enemy *enemy_init(struct point *, unsigned int);
 
 void enemy_fire(struct enemy *);
 
-void enemy_move(struct enemy *, unsigned int);
+void enemy_move(struct enemy *, int);
 
 void enemy_dest(struct enemy *);
 

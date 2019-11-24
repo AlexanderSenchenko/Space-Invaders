@@ -40,7 +40,7 @@ void init_client(int argc, char **argv)
   }
 }
 
-void reception()
+int reception()
 {
   file_descrip_client = socket(AF_INET, SOCK_DGRAM, 0);
   information_from_player.status = 1;
@@ -52,6 +52,8 @@ void reception()
   recvfrom(file_descrip_client, &information_to_player,
            sizeof(information_to_player), 0,
            (struct sockaddr *)&addr_server, &addr_in_size);
+
+  return information_to_player.status;
 }
 
 void *receiver() /*Заготовка*/

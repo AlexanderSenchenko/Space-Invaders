@@ -16,7 +16,7 @@ struct player *user_init(struct point *);
 
 void user_fire(struct player *);
 
-void user_move(struct player *, unsigned int);
+void user_move(struct player *, int);
 
 void user_dest(struct player *);
 

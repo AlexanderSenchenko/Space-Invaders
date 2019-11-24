@@ -20,6 +20,9 @@ void user_fire(struct player *user)
   user->bullet = bullet_init(user->coord, USER);
 }
 
+// отслеживание дейсвие с помощью curses
+// недолжно быть логике
+/*
 void user_move(struct player *user, int where)
 {
   switch (where) {
@@ -46,6 +49,7 @@ void user_move(struct player *user, int where)
   }
 
 }
+*/
 
 void user_dest(struct player *user)
 {
