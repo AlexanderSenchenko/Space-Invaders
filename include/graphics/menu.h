@@ -2,6 +2,7 @@
 #define _MENU_H_
 
 #include <curses.h>
+#include "../../include/logic/game.h"
 
 #define TERMINAL_WIDTH 80
 #define TERMINAL_HEIGHT 24
@@ -35,5 +36,8 @@ void draw_waiting_for_connection();
 void draw_waiting_for_player();
 
 WINDOW *draw_game_field();
+
+void erase_entity(WINDOW *game_field, const struct point *entity_positon, const char *entity_model);
+void draw_entity(WINDOW *game_field, const struct point *entity_positon, const char *entity_model);
 
 #endif // _MENU_H_

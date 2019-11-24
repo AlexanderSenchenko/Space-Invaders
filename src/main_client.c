@@ -6,6 +6,9 @@
 
 int main(int argc, char **argv)
 {
+  char *enemy_model = "###";
+  struct point enemy_position;
+
   struct game *game = NULL;
   ncurses_init();
 

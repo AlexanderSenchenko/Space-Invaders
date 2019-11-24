@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/ioctl.h>
+#include <string.h>
 #include "../../include/graphics/menu.h"
 
 void sig_winch(int signo)
@@ -187,4 +188,28 @@ WINDOW *draw_game_field()
   wrefresh(wnd);
 
   return wnd;
+}
+
+void erase_entity(WINDOW *game_field, const struct point *entity_positon, const char *entity_model)
+{
+  int len = strlen(entity_model);
+  wmove(game_field, entity_positon->x, entity_positon->y);
+
+  for (int i = 0; i < len; i++) {
+    waddch(game_field, ' ');
+  }
+
+  wrefresh(game_field);
+}
+
+void draw_entity(WINDOW *game_field, const struct point *entity_positon, const char *entity_model)
+{
+  int len = strlen(entity_model);
+  wmove(game_field, entity_positon->x, entity_positon->y);
+
+  for (int i = 0; i < len; i++) {
+    waddch(game_field, entity_model[i]);
+  }
+
+  wrefresh(game_field);
 }
