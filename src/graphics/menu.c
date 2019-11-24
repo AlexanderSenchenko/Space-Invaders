@@ -228,34 +228,39 @@ int get_player_action_from_keyboard(WINDOW *game_field,
 
   switch (ch) {
   case 'q':
+    send_message(STS_END, game->user->id, NULL, 0);
     return STATUS_EXIT;
     break;
 
-  case KEY_LEFT://игрок сдвинулся влево
+  case KEY_LEFT: // игрок сдвинулся влево
     erase_entity(game_field, game->user->coord, game->user->image);
 
-    //обновление координат
+    // обновление координат
     user_move(game->user, MOVE_LEFT);
 
     draw_entity(game_field, game->user->coord, game->user->image);
 
-    //отсылка инфы серверу
-    // send_message();
+    // отсылка инфы серверу
+    send_message(STS_MOVE, game->user->id, game->user->coord,
+                 sizeof(struct point));
+
     break;
 
-  case KEY_RIGHT://игрок сдвинулся вправо
+  case KEY_RIGHT: // игрок сдвинулся вправо
     erase_entity(game_field, game->user->coord, game->user->image);
 
-    //обновление координат
+    // обновление координат
     user_move(game->user, MOVE_RIGHT);
 
     draw_entity(game_field, game->user->coord, game->user->image);
 
-    //отсылка инфы серверу
+    // отсылка инфы серверу
+    send_message(STS_MOVE, game->user->id, (void *) game->user->coord,
+                 sizeof(struct point));
     break;
 
-  case ' '://игрок выстрелил
-    //создание координат для снаряда
+  case ' ': // игрок выстрелил
+    // создание координат для снаряда
     // TODO: Обернуть в функцию
     {
       int shift = strlen(game->user->image) / 2;
@@ -265,7 +270,7 @@ int get_player_action_from_keyboard(WINDOW *game_field,
       draw_entity(game_field, bullet_positon, bullet_model);
     }
 
-  //отсылка инфы серверу
+  // отсылка инфы серверу
   default:
     break;
   }

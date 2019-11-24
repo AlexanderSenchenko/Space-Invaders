@@ -30,7 +30,6 @@ int main(int argc, char **argv)
     draw_waiting_for_player();
 
     struct message_transmitting message = wait_start_of_game();
-    int id = message.id_user;
 
     if (message.status == STRT_GS) {
       /*
@@ -38,6 +37,7 @@ int main(int argc, char **argv)
        */
       
       struct game *game = game_init();
+      game->user->id = message.id_user;
       /*
        * отправить сереру свои координаты
        */

@@ -25,8 +25,6 @@ void user_fire(struct player *user)
 void user_move(struct player *user, int where)
 {
   int new_coord_y = user->coord->y;
-
-  // длину модельки стоит как-то вычислять я не задавать константно
   int len_user_model = strlen(user->image);
 
   switch (where) {

@@ -4,13 +4,22 @@
 #include "../logic/user.h"
 #include "../logic/enemy.h"
 #include "../logic/bullet.h"
+#include "../config.h"
+
+struct message {
+  unsigned int status;
+  unsigned int id_user;
+  unsigned int size_data;
+  char data[0];
+};
 
 void init_server(int, char **);
 void first_reception();
 void reception_application();
 void create_new_session();
 
-void recv_message(int, struct enemy *, struct player *, struct bullet *);
+int recv_message(int, struct enemy *, struct player *, struct bullet *);
+// void send_message(int, int, void *, unsigned int);
 void send_message(int, int, void *);
 
 #endif // _SERVER_H_
