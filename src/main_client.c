@@ -40,24 +40,26 @@ int main(int argc, char **argv)
       и игроков, а также моделки для отрисовки
       */
       WINDOW *game_field = draw_game_field();
-      
+
       // времено задал координаты игрока, пока не получили их с сервера
-    player_position.x = TERMINAL_HEIGHT - 1;
-    player_position.y = 12;
+      player_position.x = TERMINAL_HEIGHT - 1;
+      player_position.y = 12;
 
       while (1) {
-      //читаем с клавы
-      int status = get_player_action_from_keyboard(game_field,
-                   &player_position,
-                   &bullet_position,
-                   player_model,
-                   bullet_model);
+        //читаем с клавы
+        int status = get_player_action_from_keyboard(game_field,
+                     &player_position,
+                     &bullet_position,
+                     player_model,
+                     bullet_model);
 
-      if (status == STATUS_EXIT) {
-        break;
-      }
+        if (status == STATUS_EXIT) {
+          break;
+        }
 
         //смотрим (неблокирующе) есть ли пакет от сервера
+      }
+
       delwin(game_field);
     }
 
