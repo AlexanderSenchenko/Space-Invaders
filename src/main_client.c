@@ -36,7 +36,8 @@ int main(int argc, char **argv)
      * подключение второго клиента
      * stat_connect_to_serv != 2 в будущем
      */
-      stat_connect_to_serv = reception();
+    stat_connect_to_serv = reception();
+
     while (stat_connect_to_serv != 2) {
 
       // TODO: описать статусы подключения к серверу в define
