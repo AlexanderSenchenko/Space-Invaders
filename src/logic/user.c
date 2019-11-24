@@ -82,5 +82,10 @@ void user_move(struct point *positon, int where)
 
 void user_dest(struct player *user)
 {
-  free(user);
+  if (user) {
+    if (user->coord)
+      free(user->coord);  
+
+    free(user); 
+  }
 }
