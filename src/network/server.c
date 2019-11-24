@@ -147,20 +147,44 @@ void send_message(int status, int id_user, void *data)
          sizeof(message), 0,
          (struct sockaddr *)&addr_client[id_user], addr_in_size);/*надо посмотреть id_user*/
 }
-void recv_message(int id_user, struct enemy *enemy_mess, struct player *user_mess, struct bullet *bullet__mess)
+int recv_message(int id_user, struct enemy *enemy_mess, struct player *user_mess, struct bullet *bullet_mess, int flag)
 {
   recvfrom(file_descrip_server, &message,
-           sizeof(message), 0,
+           sizeof(message), flag,
            (struct sockaddr *)&addr_client[id_user], &addr_in_size);
 
   switch (message.status) {
   case MV_LEFT:
 
+    return MV_LEFT;
     break;
-
   case MV_RIGHT:
 
+    return MV_RIGHT;
     break;
     /*И другие*/
   }
 }
+void receiver_session()
+{
+  struct enemy enemy_mess;
+  struct player user_mess;
+  struct bullet bullet_mess;
+  int flag = STRT_GS;
+  int const_return = -1;
+  while(END_GS != flag)
+  {
+    const_return = -2;
+    const_return = recv_message(0, &enemy_mess, &user_mess, &bullet_mess, MSG_DONTWAIT);
+    if(-2 != const_return);
+    {
+      printf("User ID: 0 did the action. %d\n", const_return);
+    }
+    const_return = -1;
+    const_return = recv_message(1, &enemy_mess, &user_mess, &bullet_mess, MSG_DONTWAIT);
+    if(-2 != const_return);
+    {
+      printf("User ID: 1 did the action. %d\n", const_return);
+    }
+  }
+}/*На будущее надо либо нумеровать сессии для логов, либо надо будет для каждой сессии будет создавать свой файл с логами*/
