@@ -34,4 +34,6 @@ int menu_do();
 void draw_waiting_for_connection();
 void draw_waiting_for_player();
 
+WINDOW *draw_game_field();
+
 #endif // _MENU_H_

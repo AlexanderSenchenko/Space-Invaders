@@ -177,3 +177,14 @@ void draw_waiting_for_player()
   printw("Waiting for second player to connect");
   refresh();
 }
+
+WINDOW *draw_game_field()
+{
+  erase();
+  WINDOW *wnd = newwin(TERMINAL_HEIGHT, TERMINAL_WIDTH, 0, 0);
+  wbkgd(wnd, COLOR_PAIR(3));
+  refresh();
+  wrefresh(wnd);
+
+  return wnd;
+}

@@ -17,6 +17,7 @@ int main(int argc, char **argv)
     /*
      * экран ожидания(подключение к серверу)
      */
+
     draw_waiting_for_connection();
 
     init_client(argc, argv);
@@ -57,6 +58,7 @@ int main(int argc, char **argv)
     /*
      * отрисовать поле игры
      */
+    WINDOW *game_field = draw_game_field();
   }
 
   endwin();
