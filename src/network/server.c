@@ -26,12 +26,11 @@
 #define MV_LEFT 30
 #define MV_RIGHT 31
 
-
 struct serv_information {
   unsigned int status;
 };
 
-struct message_transmitting{
+struct message_transmitting {
   unsigned int status;
   unsigned int id_user;
   void *data;
@@ -114,12 +113,12 @@ void create_new_session()
   int i;
   int number_session;
   int id_user;
-  struct game game_ses;
+  // struct game game_ses;
   struct sockaddr_in addr_client_session[2];
 
   if ((counter_player > 1) && (counter_session < MAX_SESSION)) {
-    send_message(STRT_GS, 0, (void *)&game_ses);
-    send_message(STRT_GS, 1, (void *)&game_ses);
+    send_message(STRT_GS, 0, NULL);
+    send_message(STRT_GS, 1, NULL);
     
     addr_client_session[0] = addr_client[0];
     addr_client_session[1] = addr_client[1];
@@ -140,6 +139,8 @@ void create_new_session()
     counter_session++;
     pthread_mutex_unlock(&latch);
   }
+
+  // free_game(game_ses);
 }
 
 void send_message(int status, int id_user, void *data)

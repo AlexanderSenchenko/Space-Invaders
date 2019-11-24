@@ -16,26 +16,6 @@
 #include "../../include/logic/enemy.h"
 #include "../../include/logic/bullet.h"
 
-struct serv_information {
-  unsigned int status;
-};
-
-struct message_transmitting{
-  unsigned int status;
-  unsigned int id_user;
-  void *data;
-};
-
-/*Теги для status, 1-ая группа технические*/
-#define CONNECT 1
-#define STRT_GS 2
-#define ERR_CONN 3
-#define END_GS 9
-
-/*2-ая, группа игровой направлености*/
-#define MV_LEFT 30
-#define MV_RIGHT 31
-
 struct sockaddr_in addr_server;
 struct serv_information information_to_player;
 struct serv_information information_from_player;
@@ -100,13 +80,13 @@ void *receiver() /*Заготовка*/
   error_output(ERROR_PTHREAD);
 }*/
 
-int wait_start_of_game()
+struct message_transmitting wait_start_of_game()
 {
-  recvfrom(file_descrip_client, &information_to_player,
-           sizeof(information_to_player), 0,
+  recvfrom(file_descrip_client, &message,
+           sizeof(struct message_transmitting), 0,
            (struct sockaddr *)&addr_server, &addr_in_size);
 
-  return information_to_player.status;
+  return message;
 }
 
 void expectation()

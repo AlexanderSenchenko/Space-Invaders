@@ -6,10 +6,8 @@
 int main(int argc, char **argv)
 {
   char *enemy_model = "###";
-  char *player_model = "_/^\\_";
   char *bullet_model = "!";
   struct point enemy_position;
-  struct point player_position;
   struct point bullet_position;
 
   ncurses_init();
@@ -31,26 +29,30 @@ int main(int argc, char **argv)
     stat_connect_to_serv = reception();
     draw_waiting_for_player();
 
-    if (wait_start_of_game() == 2) {
+    struct message_transmitting message = wait_start_of_game();
+    int id = message.id_user;
+
+    if (message.status == STRT_GS) {
       /*
        * отрисовать поле игры
        */
+      
+      struct game *game = game_init();
       /*
-      Функция draw_game_field не полная. По идее должна принимать позиции врага
-      и игроков, а также моделки для отрисовки
-      */
-      WINDOW *game_field = draw_game_field();
+       * отправить сереру свои координаты
+       */
 
-      // времено задал координаты игрока, пока не получили их с сервера
-      player_position.x = TERMINAL_HEIGHT - 1;
-      player_position.y = 12;
+      /*
+       * Функция draw_game_field не полная.
+       * Осталось отрисовать врагов
+       */
+      WINDOW *game_field = draw_game_field(game);
 
       while (1) {
         //читаем с клавы
         int status = get_player_action_from_keyboard(game_field,
-                     &player_position,
+                     game,
                      &bullet_position,
-                     player_model,
                      bullet_model);
 
         if (status == STATUS_EXIT) {

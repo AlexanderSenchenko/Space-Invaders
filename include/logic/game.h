@@ -3,19 +3,15 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-// не место в логике
-// #include <curses.h>
 
 #include "user.h"
 #include "enemy.h"
-
 
 #define Dest(X) _Generic((X), \
     struct player *: user_dest, \
     struct enemy *: enemy_dest, \
     struct bullet *: bullet_dest \
 )(X)
-
 
 enum TAGS {
   USER,
@@ -34,5 +30,6 @@ struct game {
 };
 
 struct game *game_init(void);
+void free_game(struct game *);
 
 #endif // _GAME_H_
