@@ -78,6 +78,15 @@ void *receiver() /*Заготовка*/
   error_output(ERROR_PTHREAD);
 }*/
 
+int wait_start_of_game()
+{
+  recvfrom(file_descrip_client, &information_to_player,
+           sizeof(information_to_player), 0,
+           (struct sockaddr *)&addr_server, &addr_in_size);
+
+  return information_to_player.status;
+}
+
 void expectation()
 {
   int flag = 1;
