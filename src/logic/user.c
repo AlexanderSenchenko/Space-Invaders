@@ -56,7 +56,7 @@ void user_move(struct point *positon, int where)
   int new_coord_y = positon->y;
 
   // длину модельки стоит как-то вычислять я не задавать константно
-  int len_user_model = 3;
+  int len_user_model = 5;
 
   switch (where) {
   case MOVE_RIGHT:

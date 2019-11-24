@@ -6,8 +6,8 @@
 int main(int argc, char **argv)
 {
   char *enemy_model = "###";
-  char *player_model = "###";
-  char *bullet_model = "###";
+  char *player_model = "_/^\\_";
+  char *bullet_model = "!";
   struct point enemy_position;
   struct point player_position;
   struct point bullet_position;
