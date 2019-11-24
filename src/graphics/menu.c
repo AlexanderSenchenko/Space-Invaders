@@ -202,7 +202,8 @@ void erase_entity(WINDOW *game_field, const struct point *entity_positon, const 
   wrefresh(game_field);
 }
 
-void draw_entity(WINDOW *game_field, const struct point *entity_positon, const char *entity_model)
+void draw_entity(WINDOW *game_field, const struct point *entity_positon,
+                 const char *entity_model)
 {
   int len = strlen(entity_model);
   wmove(game_field, entity_positon->x, entity_positon->y);
@@ -212,4 +213,41 @@ void draw_entity(WINDOW *game_field, const struct point *entity_positon, const c
   }
 
   wrefresh(game_field);
+}
+
+void get_player_action_from_keyboard(WINDOW *game_field,
+                                     struct point *player_positon, struct point *bullet_positon,
+                                     const char *player_model, const char *bullet_model)
+{
+  int ch = getch();
+
+  switch (ch) {
+  case 'q':
+    exit(0);
+    break;
+
+  case KEY_LEFT://игрок сдвинулся влево
+    erase_entity(game_field, player_positon, player_model);
+    //обновление координат
+    draw_entity(game_field, player_positon, player_model);
+    //отсылка инфы серверу
+    break;
+
+  case KEY_RIGHT://игрок сдвинулся вправо
+    erase_entity(game_field, player_positon, player_model);
+    //обновление координат
+    draw_entity(game_field, player_positon, player_model);
+    //отсылка инфы серверу
+    break;
+
+  case ' '://игрок выстрелил
+    //создание координат для снаряда
+    draw_entity(game_field, bullet_positon, bullet_model);
+
+  //отсылка инфы серверу
+
+
+  default:
+    break;
+  }
 }

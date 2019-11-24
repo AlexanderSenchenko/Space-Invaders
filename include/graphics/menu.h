@@ -37,7 +37,13 @@ void draw_waiting_for_player();
 
 WINDOW *draw_game_field();
 
-void erase_entity(WINDOW *game_field, const struct point *entity_positon, const char *entity_model);
-void draw_entity(WINDOW *game_field, const struct point *entity_positon, const char *entity_model);
+void erase_entity(WINDOW *game_field, const struct point *entity_positon,
+                  const char *entity_model);
+void draw_entity(WINDOW *game_field, const struct point *entity_positon,
+                 const char *entity_model);
+
+void get_player_action_from_keyboard(WINDOW *game_field,
+                                     struct point *player_positon, struct point *bullet_positon,
+                                     const char *player_model, const char *bullet_model);
 
 #endif // _MENU_H_

@@ -7,7 +7,11 @@
 int main(int argc, char **argv)
 {
   char *enemy_model = "###";
+  char *player_model = "###";
+  char *bullet_model = "###";
   struct point enemy_position;
+  struct point player_position;
+  struct point bullet_position;
 
   struct game *game = NULL;
   ncurses_init();
@@ -61,7 +65,19 @@ int main(int argc, char **argv)
     /*
      * отрисовать поле игры
      */
+    /*
+    Функция draw_game_field не полная. По идее должна принимать позиции врага
+    и игроков, а также моделки для отрисовки
+    */
     WINDOW *game_field = draw_game_field();
+
+    while (1) {
+      //читаем с клавы
+      get_player_action_from_keyboard(game_field, &player_position,
+                                      &bullet_position, player_model, bullet_model);
+
+      //смотрим (неблокирующе) есть ли пакет от сервера
+    }
   }
 
   endwin();
