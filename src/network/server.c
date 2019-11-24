@@ -87,6 +87,7 @@ void reception_application()
     pthread_mutex_lock(&latch);
     counter_player++;
     pthread_mutex_unlock(&latch);
+
   }
 }
 
