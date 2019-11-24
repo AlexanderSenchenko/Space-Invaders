@@ -109,7 +109,7 @@ int menu_move(Menu *menu)
 
     switch (ch) {
     case 'q':
-      return -1;
+      return STATUS_EXIT;
 
     case KEY_DOWN:
       menu_go_down(menu);
@@ -120,10 +120,7 @@ int menu_move(Menu *menu)
       break;
 
     case '\n':
-      if (menu_act_on_item(menu))
-        return 0;
-      else
-        return -1;
+      return (menu_act_on_item(menu));
 
     case ERR:
       break;
@@ -136,15 +133,15 @@ int menu_move(Menu *menu)
 
 int menu_act_on_item(Menu *menu)
 {
-  int status = 0;
+  int status = -1;
 
   switch (menu->current_idx) {
   case 0:
-    status = 1;
+    status = STATUS_PLAY;
     break;
 
   case 1:
-    status = -1;
+    status = STATUS_EXIT;
     break;
 
   default:
@@ -152,6 +149,16 @@ int menu_act_on_item(Menu *menu)
   }
 
   return status;
+}
+
+int menu_do()
+{
+  Menu main_menu;
+  menu_init(&main_menu);
+  int player_choice = menu_move(&main_menu);
+  menu_destroy(&main_menu);
+
+  return player_choice;
 }
 
 void draw_waiting_for_connection()

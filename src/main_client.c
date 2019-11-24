@@ -9,15 +9,11 @@ int main(int argc, char **argv)
   struct game *game = NULL;
   ncurses_init();
 
-  Menu main_menu;
-  menu_init(&main_menu);
-
   // game = game_init();
 
-  int ret_act = menu_move(&main_menu);
-  menu_destroy(&main_menu);
+  int ret_act = menu_do();
 
-  if (ret_act == 0) {
+  if (ret_act == STATUS_PLAY) {
     /*
      * экран ожидания(подключение к серверу)
      */
