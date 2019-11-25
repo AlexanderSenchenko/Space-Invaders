@@ -21,8 +21,17 @@ void user_fire(struct player *user)
 {
   static unsigned int id = 1;
   
-  bullet * bull = bullet_init(user->coord, USER);
+  int shift = strlen(user->image) / 2;
+
+  struct point *tmp = (struct point*)malloc(sizeof(struct point));
+  tmp->x = user->coord->y + shift;
+  tmp->y = user->coord->x - 1;
+
+  bullet * bull = bullet_init(tmp, USER);
+
+  free(tmp);
   bull->id = id++;
+  
   Push(&user->list, bull);
 }
 
