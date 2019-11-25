@@ -6,6 +6,7 @@
 struct bullet {
   char *image;
   struct point *coord;
+  unsigned int id;
   unsigned int tag;
 };
 

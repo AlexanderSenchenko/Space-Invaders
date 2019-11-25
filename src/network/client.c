@@ -122,29 +122,29 @@ void expectation()
   }
 }
 
-void recv_message(struct game *game_mess, struct enemy * enemy_mess,
-                  struct player *user_mess, struct bullet * bullet__mess)
+void recv_message(struct game *game_mess, struct enemy *enemy_mess,
+                  struct player *user_mess, struct bullet *bullet__mess)
 {
   struct message msg;
   char message[MAX_SIZE_MSG];
 
   recvfrom(file_descrip_client, &message,
-         sizeof(message), 0,
-         (struct sockaddr *) &addr_server, &addr_in_size);
-  
+           sizeof(message), 0,
+           (struct sockaddr *) &addr_server, &addr_in_size);
+
   memcpy(&msg, message, sizeof(struct message));
- 
-  switch(msg.status) {
+
+  switch (msg.status) {
   case STRT_GS:
     break;
-  
+
   case MV_LEFT:
     break;
-  
+
   case MV_RIGHT:
     break;
-  
-  /*И другие*/
+
+    /*И другие*/
   }
 }
 
@@ -154,16 +154,16 @@ int recv_message_dontwait(struct player *user)
   char message[MAX_SIZE_MSG];
 
   recvfrom(file_descrip_client, &message,
-         sizeof(message), MSG_DONTWAIT,
-         (struct sockaddr *) &addr_server, &addr_in_size);
-  
+           sizeof(message), MSG_DONTWAIT,
+           (struct sockaddr *) &addr_server, &addr_in_size);
+
   memcpy(&msg, message, sizeof(struct message));
- 
-  switch(msg.status) {
+
+  switch (msg.status) {
   case STC_END:
     return STC_END;
     break;
-  
+
   case STC_MOVE:
     user->id = msg.id_user;
     memcpy(user->coord, message + sizeof(struct message),
@@ -181,7 +181,7 @@ int recv_message_dontwait(struct player *user)
 void send_message(int status, int id_user, void *data, unsigned int size_data)
 {
   unsigned int size_msg = sizeof(struct message) + size_data;
-  
+
   struct message *msg = calloc(1, size_msg);
   msg->status = status;
   msg->id_user = id_user;
