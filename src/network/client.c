@@ -135,23 +135,19 @@ void expectation()
   }
 }
 
-
 void recv_message(struct game *game_mess, struct enemy *enemy_mess,
                   struct player *user_mess, struct bullet *bullet__mess)
-
 {
   struct message msg;
   char message[MAX_SIZE_MSG];
 
   recvfrom(file_descrip_client, &message,
-
            sizeof(message), 0,
            (struct sockaddr *) &addr_server, &addr_in_size);
 
   memcpy(&msg, message, sizeof(struct message));
 
   switch (msg.status) {
-
   case STRT_GS:
 
     break;
@@ -168,6 +164,7 @@ void recv_message(struct game *game_mess, struct enemy *enemy_mess,
     /*И другие*/
   }
 }
+
 int recv_message_dontwait(struct player *user)
 {
   struct message msg;
@@ -197,6 +194,7 @@ int recv_message_dontwait(struct player *user)
 
   return 0;
 }
+
 void send_message(int status, int id_user, void *data, unsigned int size_data)
 {
   unsigned int size_msg = sizeof(struct message) + size_data;

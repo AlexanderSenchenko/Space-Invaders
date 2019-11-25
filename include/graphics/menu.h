@@ -46,4 +46,9 @@ int get_player_action_from_keyboard(WINDOW *game_field,
                                     struct point *bullet_positon,
                                     const char *bullet_model);
 
+void refresh_plaer(WINDOW *game_field, struct player *plr_opd,
+                   struct player *plr_new);
+int server_listening(WINDOW *game_field, struct game *game,
+                     struct player **plr2);
+
 #endif // _MENU_H_

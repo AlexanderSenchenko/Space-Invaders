@@ -7,6 +7,7 @@
 
 #define MAX_CLIENT 10
 #define MAX_SESSION 3
+
 // Send To Client
 #define STC_END   50
 #define STC_MOVE  52

@@ -140,10 +140,9 @@ void create_new_session()
   }
 
   // временный цикл, для испровления отпраыки сообщени
-#if 1
   struct point *coord = calloc(1, sizeof(struct point));
   struct player *plr = user_init(coord);
-  ////////////////////////////////////////////////////////////////////////////////////////////
+
   pthread_mutex_init(&mtx_one, NULL);
   pthread_create(&new_flow, NULL, new_function, NULL);
 
@@ -165,7 +164,7 @@ void create_new_session()
   }
 
   user_dest(plr);
-#endif
+  function_closed_server();
 }
 
 void send_message(int status, int id_user, void *data, unsigned int size_data)
@@ -222,37 +221,14 @@ int recv_message(int id_user, struct enemy *enemy_mess,
 
   return 0;
 }
-/*
-void receiver_session()
-{
-  struct enemy enemy_mess;
-  struct player user_mess;
-  struct bullet bullet_mess;
-  int flag = STRT_GS;
-  int const_return = -2;
-  while(END_GS != flag)
-  {
-    const_return = -2;
-    const_return = recv_message(0, &enemy_mess, &user_mess, &bullet_mess, MSG_DONTWAIT);
-    if(-2 != const_return);
-    {
-      printf("User ID: 0 did the action. %d\n", const_return);
-    }
-    const_return = -1;
-    const_return = recv_message(1, &enemy_mess, &user_mess, &bullet_mess, MSG_DONTWAIT);
-    if(-2 != const_return);
-    {
-      printf("User ID: 1 did the action. %d\n", const_return);
-    }
-  }
-}
-*/
+
 void function_closed_server()
 {
   close(file_descrip_server);
   pthread_mutex_destroy(&latch);
   pthread_mutex_destroy(&mtx_one);
 }
+
 void *new_function() //придумать имя
 {
   struct timeval time;
