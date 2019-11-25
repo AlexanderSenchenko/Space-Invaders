@@ -104,6 +104,7 @@ void reception_application()
     pthread_mutex_lock(&latch);
     counter_player++;
     pthread_mutex_unlock(&latch);
+
   }
 }
 
@@ -119,8 +120,10 @@ void create_new_session()
   if ((counter_player > 1) && (counter_session < MAX_SESSION)) {
     send_message(STRT_GS, 0, (void *)&game_ses);
     send_message(STRT_GS, 1, (void *)&game_ses);
+
     addr_client_session[0] = addr_client[0];
     addr_client_session[1] = addr_client[1];
+
     /*
      * Create a process or thread as a game session.
      * We give them a fork and shift the structure by 2
@@ -138,15 +141,18 @@ void create_new_session()
     pthread_mutex_unlock(&latch);
   }
 }
+
 void send_message(int status, int id_user, void *data)
 {
   message.status = status;
   message.id_user = id_user;
   message.data = &data;
+
   sendto(file_descrip_server, &message,
          sizeof(message), 0,
          (struct sockaddr *)&addr_client[id_user], addr_in_size);/*надо посмотреть id_user*/
 }
+
 int recv_message(int id_user, struct enemy *enemy_mess, struct player *user_mess, struct bullet *bullet_mess, int flag)
 {
   recvfrom(file_descrip_server, &message,
@@ -161,8 +167,10 @@ int recv_message(int id_user, struct enemy *enemy_mess, struct player *user_mess
   case MV_RIGHT:
 
     return MV_RIGHT;
+
     break;
-    /*И другие*/
+
+  /*И другие*/
   }
 }
 void receiver_session()
@@ -171,7 +179,7 @@ void receiver_session()
   struct player user_mess;
   struct bullet bullet_mess;
   int flag = STRT_GS;
-  int const_return = -1;
+  int const_return = -2;
   while(END_GS != flag)
   {
     const_return = -2;

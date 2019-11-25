@@ -27,66 +27,42 @@ int main(int argc, char **argv)
 
     int stat_connect_to_serv = 0;
 
-    /*
-     * stat_connect_to_serv != 1 временно, пока, нет функционала
-     * подключение второго клиента
-     * stat_connect_to_serv != 2 в будущем
-     */
-    while (stat_connect_to_serv != 1) {
-      stat_connect_to_serv = reception();
 
-      // TODO: описать статусы подключения к серверу в define
-      switch (stat_connect_to_serv) {
-      case 1: // подключен к серверу, ожидание второго игрока
-        /*
-         * экран ожидания(подключение к второго игрока к серверу)
-         */
-        draw_waiting_for_player();
-        break;
+    stat_connect_to_serv = reception();
+    draw_waiting_for_player();
 
-      case 2: // сообщение о там, что игру можно начать
-        /*
-         * возможно, тут что-то происходит
-         */
-        break;
+    if (wait_start_of_game() == 2) {
+      /*
+       * отрисовать поле игры
+       */
+      /*
+      Функция draw_game_field не полная. По идее должна принимать позиции врага
+      и игроков, а также моделки для отрисовки
+      */
+      WINDOW *game_field = draw_game_field();
 
-      default:
-        /*
-         * возможно сообщение об ошибке подключения к серверу
-         */
-        break;
-      }
-    }
+      // времено задал координаты игрока, пока не получили их с сервера
+      player_position.x = TERMINAL_HEIGHT - 1;
+      player_position.y = 12;
 
-    /*
-     * отрисовать поле игры
-     */
-    /*
-    Функция draw_game_field не полная. По идее должна принимать позиции врага
-    и игроков, а также моделки для отрисовки
-    */
-    WINDOW *game_field = draw_game_field();
+      while (1) {
+        //читаем с клавы
+        int status = get_player_action_from_keyboard(game_field,
+                     &player_position,
+                     &bullet_position,
+                     player_model,
+                     bullet_model);
 
-    // времено задал координаты игрока, пока не получили их с сервера
-    player_position.x = TERMINAL_HEIGHT - 1;
-    player_position.y = 12;
+        if (status == STATUS_EXIT) {
+          break;
+        }
 
-    while (1) {
-      //читаем с клавы
-      int status = get_player_action_from_keyboard(game_field,
-                   &player_position,
-                   &bullet_position,
-                   player_model,
-                   bullet_model);
-
-      if (status == STATUS_EXIT) {
-        break;
+        //смотрим (неблокирующе) есть ли пакет от сервера
       }
 
-      //смотрим (неблокирующе) есть ли пакет от сервера
+      delwin(game_field);
     }
 
-    delwin(game_field);
   }
 
   endwin();
