@@ -32,7 +32,7 @@ int main(int argc, char **argv)
       /*
        * отрисовать поле игры
        */
-      
+
       struct game *game = game_init();
       game->user->id = message.id_user;
 
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
        * Осталось отрисовать врагов
        */
       WINDOW *game_field = draw_game_field(game);
-      
+
       struct player *plr2 = NULL;
       int ret_listening;
 

@@ -5,17 +5,22 @@ struct game *game_init(void)
   struct game *game = (struct game *)malloc(sizeof(struct game));
 
   struct point *user_coord = (struct point *)malloc(sizeof(struct point ));
+  struct point *second_user_coord = (struct point *)malloc(sizeof(struct point ));
   struct player *user = (struct player *)malloc(sizeof(struct player ));
   struct player *second_user = (struct player *)malloc(sizeof(struct player ));
 
   user_coord->x = TERMINAL_HEIGHT - 1; // ЗДЕСЬ ВСТАВИТЬ НАЧАЛЬНЫЕ КООРДЫ
   user_coord->y = 40;                  // ДЛЯ ИГРОКОВ
 
+  second_user_coord->x = TERMINAL_HEIGHT - 1;
+  second_user_coord->y = 40;
+
+
   user = user_init(user_coord);
-  second_user = user_init(user_coord);
+  second_user = user_init(second_user_coord);
 
   // пока монстров не трогаем
-  #if 0
+#if 0
   // инициализация для первого слоя мобов
   struct point **alien_coord = (struct point **)malloc(12 * sizeof(
                                  struct point *));
@@ -49,7 +54,8 @@ struct game *game_init(void)
 
     aliens[i] = enemy_init(alien_coord[i], HARD);
   }
-  #endif
+
+#endif
 
   // game->aliens = aliens;
   game->user = user;

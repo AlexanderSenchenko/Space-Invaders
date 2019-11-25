@@ -120,7 +120,7 @@ void create_new_session()
 
     addr_client_session[0] = addr_client[0];
     addr_client_session[1] = addr_client[1];
-    
+
     /*
      * Create a process or thread as a game session.
      * We give them a fork and shift the structure by 2
@@ -139,10 +139,10 @@ void create_new_session()
   }
 
   // временный цикл, для испровления отпраыки сообщени
-  #if 1
+#if 1
   struct point *coord = calloc(1, sizeof(struct point));
   struct player *plr = user_init(coord);
-  
+
   while (1) {
     int exit_stauts = recv_message(0, NULL, plr, NULL);
 
@@ -161,13 +161,13 @@ void create_new_session()
   }
 
   user_dest(plr);
-  #endif
+#endif
 }
 
 void send_message(int status, int id_user, void *data, unsigned int size_data)
 {
   unsigned int size_msg = sizeof(struct message) + size_data;
-  
+
   struct message *msg = calloc(1, size_msg);
   msg->status = status;
   msg->id_user = id_user;
@@ -197,13 +197,13 @@ int recv_message(int id_user, struct enemy *enemy_mess,
 
   memcpy(&msg, message, sizeof(struct message));
 
-  switch(msg.status) {
+  switch (msg.status) {
   case MV_LEFT:
     break;
-  
+
   case MV_RIGHT:
     break;
-  
+
   case STS_MOVE:
     user_mess->id = msg.id_user;
     memcpy(user_mess->coord, message + sizeof(struct message),
@@ -213,7 +213,7 @@ int recv_message(int id_user, struct enemy *enemy_mess,
 
   case STS_END:
     return STS_END;
-  /*И другие*/
+    /*И другие*/
   }
 
   return 0;
