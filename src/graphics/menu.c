@@ -5,6 +5,7 @@
 #include <string.h>
 #include "../../include/graphics/menu.h"
 #include "../../include/network/client.h"
+#include "../../include/logic/bullet.h"
 
 void sig_winch(int signo)
 {
@@ -266,12 +267,16 @@ int get_player_action_from_keyboard(WINDOW *game_field,
     break;
 
   case ' ': // игрок выстрелил
+    {
+      struct bullet *bull = user_fire(game->user);
 
-    // user_fire(game->user);
+      draw_entity(game_field, bull->coord, bull->image);
 
-    draw_entity(game_field, bullet_positon, bullet_model);
-
-  // отсылка инфы серверу
+      // отсылка инфы серверу
+      send_message(STS_BULLET, game->user->id, (void *) bull,
+                   sizeof(struct bullet));
+    }
+    break;
   default:
     break;
   }

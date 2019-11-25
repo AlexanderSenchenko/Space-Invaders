@@ -38,3 +38,12 @@ struct bullet_list *Find(struct bullet_list *head, unsigned int id)
   return head;
 }
 
+void free_list(struct bullet_list *list)
+{
+  if (list) {
+    if (list->data)
+      bullet_dest(list->data);
+
+    free(list);
+  }
+}

@@ -4,7 +4,7 @@ extern char *bullet_models[];
 
 struct bullet *bullet_init(struct point *point, int tag)
 {
-  struct bullet *shot = (struct bullet *)malloc(sizeof(struct bullet));
+  struct bullet *shot = (struct bullet *) malloc(sizeof(struct bullet));
 
   shot->id = 0;
   shot->coord = point;
@@ -45,5 +45,10 @@ bool bullet_move(struct bullet *shot)
 
 void bullet_dest(struct bullet *shot)
 {
-  free(shot);
+  if (shot) {
+    if (shot->coord)
+      free(shot->coord);
+
+    free(shot);
+  }
 }

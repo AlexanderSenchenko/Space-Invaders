@@ -2,10 +2,11 @@
 #define _CONFIG_H_
 
 // Send To Server
-#define STS_END   40
-#define STS_MOVE  42
+#define STS_END     40
+#define STS_MOVE    42
+#define STS_BULLET  43
 
-#define MAX_CLIENT 10
+#define MAX_CLIENT  10
 #define MAX_SESSION 3
 
 // Send To Client

@@ -17,21 +17,23 @@ struct player *user_init(struct point *point)
   return user;
 }
 
-void user_fire(struct player *user)
+struct bullet *user_fire(struct player *user)
 {
   static unsigned int id = 1;
 
   int shift = strlen(user->image) / 2;
 
-  struct point *tmp = (struct point *)malloc(sizeof(struct point));
-  tmp->x = user->coord->y + shift;
-  tmp->y = user->coord->x - 1;
+  struct point *tmp = (struct point *) malloc(sizeof(struct point));
+  tmp->y = user->coord->y + shift;
+  tmp->x = user->coord->x - 1;
 
   struct bullet *bull = bullet_init(tmp, USER);
 
   bull->id = id++;
 
   Push(&user->list, bull);
+
+  return bull;
 }
 
 void user_move(struct player *user, int where)
@@ -66,6 +68,14 @@ void user_dest(struct player *user)
   if (user) {
     if (user->coord)
       free(user->coord);
+
+    struct bullet_list *tmp_list;
+    
+    while (user->list != NULL) {
+      tmp_list = user->list->next;
+      free_list(user->list);
+      user->list = tmp_list;
+    }
 
     free(user);
   }

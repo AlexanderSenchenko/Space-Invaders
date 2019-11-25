@@ -14,4 +14,6 @@ void Pop(struct bullet_list *head, unsigned int id);
 
 struct bullet_list *Find(struct bullet_list *head, unsigned int id);
 
+void free_list(struct bullet_list *);
+
 #endif // _BULLET_LIST_H_
