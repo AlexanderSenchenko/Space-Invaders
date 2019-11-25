@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <curses.h>
+#include <string.h>
 #include "../include/graphics/menu.h"
 #include "../include/network/client.h"
 
@@ -15,10 +16,6 @@ int main(int argc, char **argv)
   int ret_act = menu_do();
 
   if (ret_act == STATUS_PLAY) {
-    /*
-     * экран ожидания(подключение к серверу)
-     */
-
     draw_waiting_for_connection();
 
     init_client(argc, argv);
@@ -38,18 +35,18 @@ int main(int argc, char **argv)
       
       struct game *game = game_init();
       game->user->id = message.id_user;
-      /*
-       * отправить сереру свои координаты
-       */
 
       /*
        * Функция draw_game_field не полная.
        * Осталось отрисовать врагов
        */
       WINDOW *game_field = draw_game_field(game);
+      
+      struct player *plr2 = NULL;
+      int ret_listening;
 
       while (1) {
-        //читаем с клавы
+        // читаем с клавы
         int status = get_player_action_from_keyboard(game_field,
                      game,
                      &bullet_position,
@@ -59,12 +56,13 @@ int main(int argc, char **argv)
           break;
         }
 
-        //смотрим (неблокирующе) есть ли пакет от сервера
+        // смотрим (неблокирующе) есть ли пакет от сервера
+        ret_listening = server_listening(game_field, game, &plr2);
       }
 
+      user_dest(plr2);
       delwin(game_field);
     }
-
   }
 
   endwin();

@@ -41,6 +41,7 @@ void expectation();
 struct message_transmitting wait_start_of_game();
 
 void recv_message(struct game *, struct enemy *, struct player *, struct bullet *);
+int recv_message_dontwait(struct player *);
 void send_message(int, int, void *, unsigned int);
 
 #endif // _CLIENT_H_

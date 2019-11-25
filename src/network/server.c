@@ -139,13 +139,29 @@ void create_new_session()
   }
 
   // временный цикл, для испровления отпраыки сообщени
+  #if 1
+  struct point *coord = calloc(1, sizeof(struct point));
+  struct player *plr = user_init(coord);
+  
   while (1) {
-    int exit_stauts = recv_message(0, NULL, NULL, NULL);
+    int exit_stauts = recv_message(0, NULL, plr, NULL);
 
-    if (exit_stauts == STS_END)
+    if (exit_stauts == STS_END) {
       break;
+    } else if (exit_stauts == STS_MOVE) {
+      /*
+       * plr->id ^ 1
+       * Так как в одной сесси пользователе имеют ид 0 и 1,
+       * то можно получить сообщение, например от 0-игрока,
+       * и с помощию xor получить ид второго игрока, которому
+       * нужно продублировать сообщение
+       */
+      send_message(STC_MOVE, plr->id ^ 1, plr->coord, sizeof(struct point));
+    }
   }
 
+  user_dest(plr);
+  #endif
 }
 
 void send_message(int status, int id_user, void *data, unsigned int size_data)
@@ -167,21 +183,19 @@ void send_message(int status, int id_user, void *data, unsigned int size_data)
     free(msg);
 }
 
-int recv_message(int id_user, struct enemy * enemy_mess,
-                  struct player *user_mess, struct bullet * bullet__mess)
+int recv_message(int id_user, struct enemy *enemy_mess,
+                 struct player *user_mess, struct bullet *bullet__mess)
 {
   struct message msg;
   char message[MAX_SIZE_MSG];
+  struct sockaddr_in addr_client;
+  int ret;
 
-  int ret = recvfrom(file_descrip_server, message,
-            MAX_SIZE_MSG, 0,
-            (struct sockaddr *) &addr_client[id_user], &addr_in_size);
+  ret = recvfrom(file_descrip_server, message,
+                 MAX_SIZE_MSG, 0,
+                 (struct sockaddr *) &addr_client, &addr_in_size);
 
   memcpy(&msg, message, sizeof(struct message));
-
-  // временно 
-  // printf("Size messgae: %d, Act: %d, Id: %d, Size data: %d\n",
-  //        ret, msg.status, msg.id_user, msg.size_data);
 
   switch(msg.status) {
   case MV_LEFT:
@@ -191,14 +205,10 @@ int recv_message(int id_user, struct enemy * enemy_mess,
     break;
   
   case STS_MOVE:
-    // временно
-    #if 1
-    {
-      struct point coord;
-      memcpy(&coord, message + sizeof(struct message), sizeof(struct point));
-      printf("y: %d, x: %d\n", coord.y, coord.x);
-    }
-    #endif
+    user_mess->id = msg.id_user;
+    memcpy(user_mess->coord, message + sizeof(struct message),
+           sizeof(struct point));
+    return STS_MOVE;
     break;
 
   case STS_END:

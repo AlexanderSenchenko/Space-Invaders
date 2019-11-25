@@ -189,6 +189,7 @@ WINDOW *draw_game_field(const struct game *game)
   wrefresh(wnd);
 
   draw_entity(wnd, game->user->coord, game->user->image);
+  
   // отправка серверу начальных координат
   send_message(STS_MOVE, game->user->id, game->user->coord,
                sizeof(struct point));
@@ -279,4 +280,47 @@ int get_player_action_from_keyboard(WINDOW *game_field,
   }
 
   return STATUS_PLAY;
+}
+
+void refresh_plaer(WINDOW *game_field, struct player *plr_opd,
+                   struct player *plr_new)
+{
+  erase_entity(game_field, plr_opd->coord, plr_opd->image);
+  draw_entity(game_field, plr_new->coord, plr_new->image);
+}
+
+/*
+ * Прием информации в неблокирующем режиме
+ * Пока реализована обновление координат второго пользователя
+ * 
+ */ 
+int server_listening(WINDOW *game_field, struct game *game,
+                     struct player **plr2)
+{
+  int ret_recv;
+  struct point *coord = calloc(1, sizeof(struct point));
+  struct player *plr2_new = user_init(coord);
+  
+  ret_recv = recv_message_dontwait(plr2_new);
+  
+  if (ret_recv == STC_MOVE) {
+    if (*plr2 == NULL) {
+      *plr2 = calloc(1, sizeof(struct player));
+      refresh_plaer(game_field, plr2_new, plr2_new);
+    } else {
+      refresh_plaer(game_field, *plr2, plr2_new);
+    }
+
+    memcpy(*plr2, plr2_new, sizeof(struct player));
+
+    refresh_plaer(game_field, game->user, game->user);
+
+    free(plr2_new);
+    
+    return STC_MOVE;
+  } else if (ret_recv = STC_END) {
+    return STC_END;
+  }
+
+  return 0;
 }

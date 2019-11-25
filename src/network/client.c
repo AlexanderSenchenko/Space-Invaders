@@ -148,6 +148,36 @@ void recv_message(struct game *game_mess, struct enemy * enemy_mess,
   }
 }
 
+int recv_message_dontwait(struct player *user)
+{
+  struct message msg;
+  char message[MAX_SIZE_MSG];
+
+  recvfrom(file_descrip_client, &message,
+         sizeof(message), MSG_DONTWAIT,
+         (struct sockaddr *) &addr_server, &addr_in_size);
+  
+  memcpy(&msg, message, sizeof(struct message));
+ 
+  switch(msg.status) {
+  case STC_END:
+    return STC_END;
+    break;
+  
+  case STC_MOVE:
+    user->id = msg.id_user;
+    memcpy(user->coord, message + sizeof(struct message),
+           sizeof(struct point));
+    return STC_MOVE;
+    break;
+
+  default:
+    break;
+  }
+
+  return 0;
+}
+
 void send_message(int status, int id_user, void *data, unsigned int size_data)
 {
   unsigned int size_msg = sizeof(struct message) + size_data;
