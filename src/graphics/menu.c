@@ -266,13 +266,10 @@ int get_player_action_from_keyboard(WINDOW *game_field,
     break;
 
   case ' ': // игрок выстрелил
-    // создание координат для снаряда
-    // TODO: Обернуть в функцию
-    {
-      //user_fire(game->user);
+
+    // user_fire(game->user);
 
     draw_entity(game_field, bullet_positon, bullet_model);
-  }
 
   // отсылка инфы серверу
   default:

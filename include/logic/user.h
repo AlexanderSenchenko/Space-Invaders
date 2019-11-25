@@ -12,7 +12,7 @@
 
 struct player {
   struct point *coord;
-  struct bullet_list * list;
+  struct bullet_list *list;
   char *image;
   unsigned int hp;
   unsigned int points;

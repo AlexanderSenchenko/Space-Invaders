@@ -16,6 +16,19 @@
 #include "../../include/logic/enemy.h"
 #include "../../include/logic/bullet.h"
 
+
+
+/*Теги для status, 1-ая группа технические*/
+#define CONNECT 1
+#define STRT_GS 2
+#define ERR_CONN 3
+#define END_GS 9
+
+/*2-ая, группа игровой направлености*/
+#define MV_LEFT 30
+#define MV_RIGHT 31
+
+
 struct sockaddr_in addr_server;
 struct serv_information information_to_player;
 struct serv_information information_from_player;
@@ -136,12 +149,16 @@ void recv_message(struct game *game_mess, struct enemy *enemy_mess,
 
   switch (msg.status) {
   case STRT_GS:
+
     break;
 
   case MV_LEFT:
+
     break;
 
   case MV_RIGHT:
+
+
     break;
 
     /*И другие*/

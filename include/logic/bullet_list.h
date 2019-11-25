@@ -3,10 +3,9 @@
 
 #include "bullet.h"
 
-struct bullet_list
-{
-    struct bullet * data;
-    struct bullet_list * next;
+struct bullet_list {
+  struct bullet *data;
+  struct bullet_list *next;
 };
 
 void Push(struct bullet_list **head, struct bullet *data);
