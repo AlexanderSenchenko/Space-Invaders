@@ -29,7 +29,6 @@ void user_fire(struct player *user)
 
   bullet * bull = bullet_init(tmp, USER);
 
-  free(tmp);
   bull->id = id++;
   
   Push(&user->list, bull);
