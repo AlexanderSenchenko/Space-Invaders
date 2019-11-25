@@ -237,6 +237,7 @@ int get_player_action_from_keyboard(WINDOW *game_field,
     break;
 
   case KEY_LEFT: // игрок сдвинулся влево
+  refresh_plaer(game_field, game->second_user, game->second_user);
     erase_entity(game_field, game->user->coord, game->user->image);
 
     // обновление координат
@@ -251,6 +252,7 @@ int get_player_action_from_keyboard(WINDOW *game_field,
     break;
 
   case KEY_RIGHT: // игрок сдвинулся вправо
+  	    refresh_plaer(game_field, game->second_user, game->second_user);
     erase_entity(game_field, game->user->coord, game->user->image);
 
     // обновление координат
@@ -309,6 +311,7 @@ int server_listening(WINDOW *game_field, struct game *game,
       refresh_plaer(game_field, plr2_new, plr2_new);
     } else {
       refresh_plaer(game_field, *plr2, plr2_new);
+      memcpy(game->second_user, plr2_new, sizeof(struct player));
     }
 
     memcpy(*plr2, plr2_new, sizeof(struct player));

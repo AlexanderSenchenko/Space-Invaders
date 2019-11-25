@@ -6,11 +6,13 @@ struct game *game_init(void)
 
   struct point *user_coord = (struct point *)malloc(sizeof(struct point ));
   struct player *user = (struct player *)malloc(sizeof(struct player ));
+  struct player *second_user = (struct player *)malloc(sizeof(struct player ));
 
   user_coord->x = TERMINAL_HEIGHT - 1; // ЗДЕСЬ ВСТАВИТЬ НАЧАЛЬНЫЕ КООРДЫ
   user_coord->y = 40;                  // ДЛЯ ИГРОКОВ
 
   user = user_init(user_coord);
+  second_user = user_init(user_coord);
 
   // пока монстров не трогаем
   #if 0
@@ -51,6 +53,7 @@ struct game *game_init(void)
 
   // game->aliens = aliens;
   game->user = user;
+  game->second_user = second_user;
   game->score = 0;
 }
 

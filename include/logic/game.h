@@ -25,6 +25,7 @@ struct point {
 
 struct game {
   struct player *user;
+  struct player *second_user;
   struct enemy **aliens;
   unsigned int score;
 };
