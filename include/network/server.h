@@ -24,5 +24,6 @@ void function_closed_server();
 void *new_function();
 
 void update_player_coord(struct game *game_ses, int id, struct point *coord);
+void add_bullet(struct game *game_ses, int id, struct bullet *tmp_bull);
 
 #endif // _SERVER_H_

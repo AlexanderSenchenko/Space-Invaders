@@ -163,6 +163,7 @@ void create_new_session()
       update_player_coord(game_ses, plr->id, plr->coord);
       send_message(STC_MOVE, plr->id ^ 1, plr->coord, sizeof(struct point));
     } else if (exit_stauts == STS_BULLET) {
+      add_bullet(game_ses, plr->id, bull);
       printf("Idu: %d, Idb: %d, x: %d, y: %d\n", plr->id, bull->id,
              bull->coord->x, bull->coord->y);
     }
@@ -185,9 +186,19 @@ void update_player_coord(struct game *game_ses, int id, struct point *coord)
   }
 }
 
-void add_bullet()
+void add_bullet(struct game *game_ses, int id, struct bullet *tmp_bull)
 {
+  struct bullet *bull = calloc(1, sizeof(struct bullet));
+  memcpy(bull, tmp_bull, sizeof(struct bullet));
 
+  if (id == 0) {
+    Push(&game_ses->user->list, bull);
+  } else if (id == 1) {
+    Push(&game_ses->second_user->list, bull);
+  } else {
+    // Error
+    bullet_dest(bull);
+  }
 }
 
 // TODO: переделать send_message для отправки bullet
