@@ -189,6 +189,9 @@ WINDOW *draw_game_field(const struct game *game)
   wrefresh(wnd);
 
   draw_entity(wnd, game->user->coord, game->user->image);
+  // отправка серверу начальных координат
+  send_message(STS_MOVE, game->user->id, game->user->coord,
+               sizeof(struct point));
 
   return wnd;
 }

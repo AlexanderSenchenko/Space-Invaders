@@ -192,11 +192,13 @@ int recv_message(int id_user, struct enemy * enemy_mess,
   
   case STS_MOVE:
     // временно
-    // {
-    //   struct point coord;
-    //   memcpy(&coord, message + sizeof(struct message), sizeof(struct point));
-    //   printf("y: %d, x: %d\n", coord.y, coord.x);
-    // }
+    #if 1
+    {
+      struct point coord;
+      memcpy(&coord, message + sizeof(struct message), sizeof(struct point));
+      printf("y: %d, x: %d\n", coord.y, coord.x);
+    }
+    #endif
     break;
 
   case STS_END:
