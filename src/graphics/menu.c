@@ -262,13 +262,13 @@ int get_player_action_from_keyboard(WINDOW *game_field,
   case ' ': // игрок выстрелил
     // создание координат для снаряда
     // TODO: Обернуть в функцию
-    {
-      int shift = strlen(game->user->image) / 2;
-      bullet_positon->y = game->user->coord->y + shift;
-      bullet_positon->x = game->user->coord->x - 1;
+  {
+    int shift = strlen(game->user->image) / 2;
+    bullet_positon->y = game->user->coord->y + shift;
+    bullet_positon->x = game->user->coord->x - 1;
 
-      draw_entity(game_field, bullet_positon, bullet_model);
-    }
+    draw_entity(game_field, bullet_positon, bullet_model);
+  }
 
   // отсылка инфы серверу
   default:

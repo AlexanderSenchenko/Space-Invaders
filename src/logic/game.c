@@ -13,7 +13,7 @@ struct game *game_init(void)
   user = user_init(user_coord);
 
   // пока монстров не трогаем
-  #if 0
+#if 0
   // инициализация для первого слоя мобов
   struct point **alien_coord = (struct point **)malloc(12 * sizeof(
                                  struct point *));
@@ -47,7 +47,8 @@ struct game *game_init(void)
 
     aliens[i] = enemy_init(alien_coord[i], HARD);
   }
-  #endif
+
+#endif
 
   // game->aliens = aliens;
   game->user = user;

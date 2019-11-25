@@ -53,8 +53,8 @@ void user_dest(struct player *user)
 {
   if (user) {
     if (user->coord)
-      free(user->coord);  
+      free(user->coord);
 
-    free(user); 
+    free(user);
   }
 }

@@ -17,17 +17,6 @@
 #include "../../include/logic/bullet.h"
 
 
-struct serv_information {
-  unsigned int status;
-};
-
-
-struct message_transmitting{
-
-  unsigned int status;
-  unsigned int id_user;
-  void *data;
-};
 
 /*Теги для status, 1-ая группа технические*/
 #define CONNECT 1
@@ -147,8 +136,8 @@ void expectation()
 }
 
 
-void recv_message(struct game *game_mess, struct enemy * enemy_mess,
-                  struct player *user_mess, struct bullet * bullet__mess)
+void recv_message(struct game *game_mess, struct enemy *enemy_mess,
+                  struct player *user_mess, struct bullet *bullet__mess)
 
 {
   struct message msg;
@@ -156,12 +145,12 @@ void recv_message(struct game *game_mess, struct enemy * enemy_mess,
 
   recvfrom(file_descrip_client, &message,
 
-         sizeof(message), 0,
-         (struct sockaddr *) &addr_server, &addr_in_size);
+           sizeof(message), 0,
+           (struct sockaddr *) &addr_server, &addr_in_size);
 
   memcpy(&msg, message, sizeof(struct message));
 
-  switch(msg.status) {
+  switch (msg.status) {
 
   case STRT_GS:
 
@@ -176,7 +165,7 @@ void recv_message(struct game *game_mess, struct enemy * enemy_mess,
 
     break;
 
-  /*И другие*/
+    /*И другие*/
   }
 }
 int recv_message_dontwait(struct player *user)
@@ -185,12 +174,12 @@ int recv_message_dontwait(struct player *user)
   char message[MAX_SIZE_MSG];
 
   recvfrom(file_descrip_client, &message,
-         sizeof(message), MSG_DONTWAIT,
-         (struct sockaddr *) &addr_server, &addr_in_size);
+           sizeof(message), MSG_DONTWAIT,
+           (struct sockaddr *) &addr_server, &addr_in_size);
 
   memcpy(&msg, message, sizeof(struct message));
 
-  switch(msg.status) {
+  switch (msg.status) {
   case STC_END:
     return STC_END;
     break;

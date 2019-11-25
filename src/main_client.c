@@ -35,7 +35,7 @@ int main(int argc, char **argv)
       /*
        * отрисовать поле игры
        */
-      
+
       struct game *game = game_init();
       game->user->id = message.id_user;
       /*

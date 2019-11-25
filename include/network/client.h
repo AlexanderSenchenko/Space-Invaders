@@ -11,7 +11,7 @@ struct serv_information {
   unsigned int status;
 };
 
-struct message_transmitting{
+struct message_transmitting {
   unsigned int status;
   unsigned int id_user;
   void *data;

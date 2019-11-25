@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/select.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/udp.h>
@@ -15,8 +16,7 @@
 #include "../../include/logic/enemy.h"
 #include "../../include/logic/bullet.h"
 
-#define MAX_CLIENT 10
-#define MAX_SESSION 3
+
 /*Теги для status, 1-ая группа технические*/
 #define CONNECT 1
 #define STRT_GS 2
@@ -140,12 +140,13 @@ void create_new_session()
   }
 
   // временный цикл, для испровления отпраыки сообщени
-  #if 1
+#if 1
   struct point *coord = calloc(1, sizeof(struct point));
   struct player *plr = user_init(coord);
   ////////////////////////////////////////////////////////////////////////////////////////////
   pthread_mutex_init(&mtx_one, NULL);
-  pthread_create();
+  pthread_create(&new_flow, NULL, new_function, NULL);
+
   while (1) {
     int exit_stauts = recv_message(0, NULL, plr, NULL);
 
@@ -164,10 +165,10 @@ void create_new_session()
   }
 
   user_dest(plr);
-  #endif
+#endif
 }
 
-oid send_message(int status, int id_user, void *data, unsigned int size_data)
+void send_message(int status, int id_user, void *data, unsigned int size_data)
 {
   unsigned int size_msg = sizeof(struct message) + size_data;
 
@@ -200,7 +201,7 @@ int recv_message(int id_user, struct enemy *enemy_mess,
 
   memcpy(&msg, message, sizeof(struct message));
 
-  switch(msg.status) {
+  switch (msg.status) {
   case MV_LEFT:
     break;
 
@@ -216,7 +217,7 @@ int recv_message(int id_user, struct enemy *enemy_mess,
 
   case STS_END:
     return STS_END;
-  /*И другие*/
+    /*И другие*/
   }
 
   return 0;
@@ -251,4 +252,19 @@ void function_closed_server()
   close(file_descrip_server);
   pthread_mutex_destroy(&latch);
   pthread_mutex_destroy(&mtx_one);
+}
+void *new_function() //придумать имя
+{
+  struct timeval time;
+
+  int flag;
+  int data; //Заменить на нужное
+  int i;
+
+  while (1) {
+    time.tv_sec = 1L; //настроить секунды
+    time.tv_usec = 1L; // Настроить микросекунды
+    select(0, NULL, NULL, NULL, &time); //Вроде бы может зайти за таймер
+    i++;
+  }
 }
