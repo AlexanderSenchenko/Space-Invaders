@@ -2,6 +2,7 @@
 #define _USER_H_
 
 #include "bullet.h"
+#include "bullet_list.h"
 
 #define MOVE_RIGHT  1
 #define MOVE_LEFT   -1
@@ -11,9 +12,9 @@
 #define TERMINAL_HEIGHT 24
 
 struct player {
-  struct bullet *bullet;
-  char *image;
   struct point *coord;
+  struct bullet_list * list;
+  char *image;
   unsigned int hp;
   unsigned int points;
   unsigned int damage;
