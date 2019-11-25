@@ -20,6 +20,6 @@ void create_new_session();
 
 int recv_message(int, struct enemy *, struct player *, struct bullet *);
 void send_message(int, int, void *, unsigned int);
-
+void function_closed_server();
 
 #endif // _SERVER_H_

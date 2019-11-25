@@ -42,8 +42,9 @@ struct sockaddr_in addr_client[MAX_CLIENT];
 struct serv_information information_to_player;
 struct serv_information information_from_player;
 socklen_t addr_in_size = sizeof(struct sockaddr_in);
-pthread_t receiver_client;
+pthread_t new_flow; /*Временное*/
 pthread_mutex_t latch = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mtx_one = PTHREAD_MUTEX_INITIALIZER;
 
 int counter_player = 0;  // Counter responsible for counting connected players
 int counter_session = 0;
@@ -115,7 +116,6 @@ void create_new_session()
 
   if ((counter_player > 1) && (counter_session < MAX_SESSION)) {
 
-
     send_message(STRT_GS, 0, NULL, 0);
     send_message(STRT_GS, 1, NULL, 0);
 
@@ -140,35 +140,35 @@ void create_new_session()
   }
 
   // временный цикл, для испровления отпраыки сообщени
+  #if 1
+  struct point *coord = calloc(1, sizeof(struct point));
+  struct player *plr = user_init(coord);
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  pthread_mutex_init(&mtx_one, NULL);
+  pthread_create();
   while (1) {
-    int exit_stauts = recv_message(0, NULL, NULL, NULL);
+    int exit_stauts = recv_message(0, NULL, plr, NULL);
 
-    if (exit_stauts == STS_END)
+    if (exit_stauts == STS_END) {
       break;
+    } else if (exit_stauts == STS_MOVE) {
+      /*
+       * plr->id ^ 1
+       * Так как в одной сесси пользователе имеют ид 0 и 1,
+       * то можно получить сообщение, например от 0-игрока,
+       * и с помощию xor получить ид второго игрока, которому
+       * нужно продублировать сообщение
+       */
+      send_message(STC_MOVE, plr->id ^ 1, plr->coord, sizeof(struct point));
+    }
   }
 
+  user_dest(plr);
+  #endif
 }
 
-void send_message(int status, int id_user, void *data, unsigned int size_data)
+oid send_message(int status, int id_user, void *data, unsigned int size_data)
 {
-<<<<<<< HEAD
-  message.status = status;
-  message.id_user = id_user;
-  message.data = &data;
-
-  sendto(file_descrip_server, &message,
-         sizeof(message), 0,
-         (struct sockaddr *)&addr_client[id_user], addr_in_size);/*надо посмотреть id_user*/
-}
-
-int recv_message(int id_user, struct enemy *enemy_mess, struct player *user_mess, struct bullet *bullet_mess, int flag)
-{
-  recvfrom(file_descrip_server, &message,
-           sizeof(message), flag,
-           (struct sockaddr *)&addr_client[id_user], &addr_in_size);
-
-  switch (message.status) {
-=======
   unsigned int size_msg = sizeof(struct message) + size_data;
 
   struct message *msg = calloc(1, size_msg);
@@ -186,54 +186,42 @@ int recv_message(int id_user, struct enemy *enemy_mess, struct player *user_mess
     free(msg);
 }
 
-int recv_message(int id_user, struct enemy * enemy_mess,
-                  struct player *user_mess, struct bullet * bullet__mess)
+int recv_message(int id_user, struct enemy *enemy_mess,
+                 struct player *user_mess, struct bullet *bullet__mess)
 {
   struct message msg;
   char message[MAX_SIZE_MSG];
+  struct sockaddr_in addr_client;
+  int ret;
 
-  int ret = recvfrom(file_descrip_server, message,
-            MAX_SIZE_MSG, 0,
-            (struct sockaddr *) &addr_client[id_user], &addr_in_size);
+  ret = recvfrom(file_descrip_server, message,
+                 MAX_SIZE_MSG, 0,
+                 (struct sockaddr *) &addr_client, &addr_in_size);
 
   memcpy(&msg, message, sizeof(struct message));
 
-  // временно
-  // printf("Size messgae: %d, Act: %d, Id: %d, Size data: %d\n",
-  //        ret, msg.status, msg.id_user, msg.size_data);
-
   switch(msg.status) {
->>>>>>> send_info
   case MV_LEFT:
-
-    return MV_LEFT;
     break;
+
   case MV_RIGHT:
-
-    return MV_RIGHT;
-
     break;
-<<<<<<< HEAD
-
-=======
 
   case STS_MOVE:
-    // временно
-    // {
-    //   struct point coord;
-    //   memcpy(&coord, message + sizeof(struct message), sizeof(struct point));
-    //   printf("y: %d, x: %d\n", coord.y, coord.x);
-    // }
+    user_mess->id = msg.id_user;
+    memcpy(user_mess->coord, message + sizeof(struct message),
+           sizeof(struct point));
+    return STS_MOVE;
     break;
 
   case STS_END:
     return STS_END;
->>>>>>> send_info
   /*И другие*/
   }
 
   return 0;
 }
+/*
 void receiver_session()
 {
   struct enemy enemy_mess;
@@ -256,4 +244,11 @@ void receiver_session()
       printf("User ID: 1 did the action. %d\n", const_return);
     }
   }
-}/*На будущее надо либо нумеровать сессии для логов, либо надо будет для каждой сессии будет создавать свой файл с логами*/
+}
+*/
+void function_closed_server()
+{
+  close(file_descrip_server);
+  pthread_mutex_destroy(&latch);
+  pthread_mutex_destroy(&mtx_one);
+}
