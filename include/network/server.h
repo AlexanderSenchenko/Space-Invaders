@@ -19,7 +19,6 @@ void reception_application();
 void create_new_session();
 
 int recv_message(int, struct enemy *, struct player *, struct bullet *);
-// void send_message(int, int, void *, unsigned int);
-void send_message(int, int, void *);
+void send_message(int, int, void *, unsigned int);
 
 #endif // _SERVER_H_

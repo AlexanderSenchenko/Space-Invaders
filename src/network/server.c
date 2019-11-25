@@ -114,9 +114,10 @@ void create_new_session()
   struct sockaddr_in addr_client_session[2];
 
   if ((counter_player > 1) && (counter_session < MAX_SESSION)) {
-    send_message(STRT_GS, 0, NULL);
-    send_message(STRT_GS, 1, NULL);
-    
+
+    send_message(STRT_GS, 0, NULL, 0);
+    send_message(STRT_GS, 1, NULL, 0);
+
     addr_client_session[0] = addr_client[0];
     addr_client_session[1] = addr_client[1];
     
@@ -147,15 +148,23 @@ void create_new_session()
 
 }
 
-void send_message(int status, int id_user, void *data)
+void send_message(int status, int id_user, void *data, unsigned int size_data)
 {
-  message.status = status;
-  message.id_user = id_user;
-  message.data = &data;
+  unsigned int size_msg = sizeof(struct message) + size_data;
   
-  sendto(file_descrip_server, &message,
-         sizeof(message), 0,
-         (struct sockaddr *) &addr_client[id_user], addr_in_size);/*надо посмотреть id_user*/
+  struct message *msg = calloc(1, size_msg);
+  msg->status = status;
+  msg->id_user = id_user;
+  msg->size_data = size_data;
+
+  if (data != NULL)
+    memcpy(msg->data, data, size_data);
+
+  sendto(file_descrip_server, msg, size_msg, 0,
+         (struct sockaddr *) &addr_client[id_user], addr_in_size);
+
+  if (msg != NULL)
+    free(msg);
 }
 
 int recv_message(int id_user, struct enemy * enemy_mess,
