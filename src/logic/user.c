@@ -27,7 +27,7 @@ void user_fire(struct player *user)
   tmp->x = user->coord->y + shift;
   tmp->y = user->coord->x - 1;
 
-  bullet * bull = bullet_init(tmp, USER);
+  struct bullet * bull = bullet_init(tmp, USER);
 
   bull->id = id++;
   
