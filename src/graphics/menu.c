@@ -189,7 +189,7 @@ WINDOW *draw_game_field(const struct game *game)
   wrefresh(wnd);
 
   draw_entity(wnd, game->user->coord, game->user->image);
-  
+
   // отправка серверу начальных координат
   send_message(STS_MOVE, game->user->id, game->user->coord,
                sizeof(struct point));
@@ -238,6 +238,7 @@ int get_player_action_from_keyboard(WINDOW *game_field,
 
   case KEY_LEFT: // игрок сдвинулся влево
     erase_entity(game_field, game->user->coord, game->user->image);
+    refresh_plaer(game_field, game->second_user, game->second_user);
 
     // обновление координат
     user_move(game->user, MOVE_LEFT);
@@ -252,6 +253,7 @@ int get_player_action_from_keyboard(WINDOW *game_field,
 
   case KEY_RIGHT: // игрок сдвинулся вправо
     erase_entity(game_field, game->user->coord, game->user->image);
+    refresh_plaer(game_field, game->second_user, game->second_user);
 
     // обновление координат
     user_move(game->user, MOVE_RIGHT);
@@ -269,8 +271,8 @@ int get_player_action_from_keyboard(WINDOW *game_field,
     {
       //user_fire(game->user);
 
-      draw_entity(game_field, bullet_positon, bullet_model);
-    }
+    draw_entity(game_field, bullet_positon, bullet_model);
+  }
 
   // отсылка инфы серверу
   default:
@@ -290,23 +292,24 @@ void refresh_plaer(WINDOW *game_field, struct player *plr_opd,
 /*
  * Прием информации в неблокирующем режиме
  * Пока реализована обновление координат второго пользователя
- * 
- */ 
+ *
+ */
 int server_listening(WINDOW *game_field, struct game *game,
                      struct player **plr2)
 {
   int ret_recv;
   struct point *coord = calloc(1, sizeof(struct point));
   struct player *plr2_new = user_init(coord);
-  
+
   ret_recv = recv_message_dontwait(plr2_new);
-  
+
   if (ret_recv == STC_MOVE) {
     if (*plr2 == NULL) {
       *plr2 = calloc(1, sizeof(struct player));
       refresh_plaer(game_field, plr2_new, plr2_new);
     } else {
       refresh_plaer(game_field, *plr2, plr2_new);
+      memcpy(game->second_user, plr2_new, sizeof(struct player));
     }
 
     memcpy(*plr2, plr2_new, sizeof(struct player));
@@ -314,7 +317,7 @@ int server_listening(WINDOW *game_field, struct game *game,
     refresh_plaer(game_field, game->user, game->user);
 
     free(plr2_new);
-    
+
     return STC_MOVE;
   } else if (ret_recv = STC_END) {
     return STC_END;
