@@ -1,6 +1,6 @@
 #include "../../include/logic/bullet_list.h"
 
-void Push(struct bullet_list **head, struct bullet *data)
+void bullet_push(struct bullet_list **head, struct bullet *data)
 {
 	struct bullet_list *tmp = (struct bullet_list*)malloc(sizeof(struct bullet_list));
 	tmp->data = data;
@@ -18,7 +18,7 @@ void Push(struct bullet_list **head, struct bullet *data)
 	}
 }
 
-void Pop(struct bullet_list *head, unsigned int id)
+void bullet_pop(struct bullet_list *head, unsigned int id)
 {
 	while (head->next != NULL && head->next->data->id != id)
 		head = head->next;
@@ -30,7 +30,7 @@ void Pop(struct bullet_list *head, unsigned int id)
 	}
 }
 
-struct bullet_list * Find(struct bullet_list *head, unsigned int id)
+struct bullet_list * bullet_find(struct bullet_list *head, unsigned int id)
 {
 	while (head && (head->data->id != id))
 		head = head->next;

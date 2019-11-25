@@ -1,7 +1,6 @@
 #ifndef _USER_H_
 #define _USER_H_
 
-#include "bullet.h"
 #include "bullet_list.h"
 
 #define MOVE_RIGHT  1
