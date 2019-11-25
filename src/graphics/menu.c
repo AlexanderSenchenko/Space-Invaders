@@ -237,8 +237,8 @@ int get_player_action_from_keyboard(WINDOW *game_field,
     break;
 
   case KEY_LEFT: // игрок сдвинулся влево
-    refresh_plaer(game_field, game->second_user, game->second_user);
     erase_entity(game_field, game->user->coord, game->user->image);
+    refresh_plaer(game_field, game->second_user, game->second_user);
 
     // обновление координат
     user_move(game->user, MOVE_LEFT);
@@ -252,8 +252,8 @@ int get_player_action_from_keyboard(WINDOW *game_field,
     break;
 
   case KEY_RIGHT: // игрок сдвинулся вправо
-    refresh_plaer(game_field, game->second_user, game->second_user);
     erase_entity(game_field, game->user->coord, game->user->image);
+    refresh_plaer(game_field, game->second_user, game->second_user);
 
     // обновление координат
     user_move(game->user, MOVE_RIGHT);
