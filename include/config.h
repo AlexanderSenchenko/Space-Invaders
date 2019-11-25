@@ -15,4 +15,11 @@
 
 #define MAX_SIZE_MSG 100
 
+struct message {
+  unsigned int status;
+  unsigned int id_user;
+  unsigned int id_bullet;
+  char data[0];
+};
+
 #endif

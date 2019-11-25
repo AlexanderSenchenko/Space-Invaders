@@ -6,12 +6,12 @@
 #include "../logic/bullet.h"
 #include "../config.h"
 
-struct message {
-  unsigned int status;
-  unsigned int id_user;
-  unsigned int size_data;
-  char data[0];
-};
+// struct message {
+//   unsigned int status;
+//   unsigned int id_user;
+//   unsigned int size_data;
+//   char data[0];
+// };
 
 void init_server(int, char **);
 void first_reception();
@@ -22,4 +22,7 @@ int recv_message(int, struct enemy *, struct player *, struct bullet *);
 void send_message(int, int, void *, unsigned int);
 void function_closed_server();
 void *new_function();
+
+void update_player_coord(struct game *game_ses, int id, struct point *coord);
+
 #endif // _SERVER_H_

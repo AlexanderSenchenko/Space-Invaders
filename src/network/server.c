@@ -140,33 +140,57 @@ void create_new_session()
   }
 
   // временный цикл, для испровления отпраыки сообщени
-  struct point *coord = calloc(1, sizeof(struct point));
-  struct player *plr = user_init(coord);
+  struct point *plr_coord = calloc(1, sizeof(struct point));
+  struct player *plr = user_init(plr_coord);
+
+  struct point *bull_coord = calloc(1, sizeof(struct point));
+  struct bullet *bull = calloc(1, sizeof(struct bullet));
+  bull->coord = bull_coord;
+
+  struct game *game_ses = game_init();
+  game_ses->user->id = 0;
+  game_ses->second_user->id = 1;
 
   pthread_mutex_init(&mtx_one, NULL);
   pthread_create(&new_flow, NULL, new_function, NULL);
 
   while (1) {
-    int exit_stauts = recv_message(0, NULL, plr, NULL);
+    int exit_stauts = recv_message(0, NULL, plr, bull);
 
     if (exit_stauts == STS_END) {
       break;
     } else if (exit_stauts == STS_MOVE) {
-      /*
-       * plr->id ^ 1
-       * Так как в одной сесси пользователе имеют ид 0 и 1,
-       * то можно получить сообщение, например от 0-игрока,
-       * и с помощию xor получить ид второго игрока, которому
-       * нужно продублировать сообщение
-       */
+      update_player_coord(game_ses, plr->id, plr->coord);
       send_message(STC_MOVE, plr->id ^ 1, plr->coord, sizeof(struct point));
+    } else if (exit_stauts == STS_BULLET) {
+      printf("Idu: %d, Idb: %d, x: %d, y: %d\n", plr->id, bull->id,
+             bull->coord->x, bull->coord->y);
     }
   }
 
   user_dest(plr);
+  bullet_dest(bull);
+  free_game(game_ses);
   function_closed_server();
 }
 
+void update_player_coord(struct game *game_ses, int id, struct point *coord)
+{
+  if (id == 0) {
+    memcpy(game_ses->user->coord, coord, sizeof(struct point));
+  } else if (id == 1) {
+    memcpy(game_ses->second_user->coord, coord, sizeof(struct point));
+  } else {
+    // Error
+  }
+}
+
+void add_bullet()
+{
+
+}
+
+// TODO: переделать send_message для отправки bullet
 void send_message(int status, int id_user, void *data, unsigned int size_data)
 {
   unsigned int size_msg = sizeof(struct message) + size_data;
@@ -174,7 +198,7 @@ void send_message(int status, int id_user, void *data, unsigned int size_data)
   struct message *msg = calloc(1, size_msg);
   msg->status = status;
   msg->id_user = id_user;
-  msg->size_data = size_data;
+  // msg->size_data = size_data;
 
   if (data != NULL)
     memcpy(msg->data, data, size_data);
@@ -201,18 +225,21 @@ int recv_message(int id_user, struct enemy *enemy_mess,
   memcpy(&msg, message, sizeof(struct message));
 
   switch (msg.status) {
-  case MV_LEFT:
-    break;
-
-  case MV_RIGHT:
-    break;
-
   case STS_MOVE:
     user_mess->id = msg.id_user;
     memcpy(user_mess->coord, message + sizeof(struct message),
            sizeof(struct point));
     return STS_MOVE;
-    break;
+
+  case STS_BULLET:
+    user_mess->id = msg.id_user;
+    bullet__mess->id = msg.id_bullet;
+    memcpy(bullet__mess->coord, message + sizeof(struct message),
+           sizeof(struct bullet));
+    // printf("Act: STS_BULLET, Idu: %d\n", msg.id_user);
+    // printf("Idb: %d, x: %d, y: %d\n", bullet__mess->id,
+    //        bullet__mess->coord->x, bullet__mess->coord->y);
+    return STS_BULLET;
 
   case STS_END:
     return STS_END;

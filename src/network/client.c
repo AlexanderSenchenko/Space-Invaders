@@ -202,10 +202,14 @@ void send_message(int status, int id_user, void *data, unsigned int size_data)
   struct message *msg = calloc(1, size_msg);
   msg->status = status;
   msg->id_user = id_user;
-  msg->size_data = size_data;
+  // msg->size_data = size_data;
 
-  if (data != NULL)
+  if (status == STS_BULLET) {
+    msg->id_bullet = ((struct bullet*) data)->id;
+    memcpy(msg->data, ((struct bullet*) data)->coord, size_data);
+  } else if (data != NULL) {
     memcpy(msg->data, data, size_data);
+  }
 
   sendto(file_descrip_client, msg, size_msg, 0,
          (struct sockaddr *) &addr_server, addr_in_size);

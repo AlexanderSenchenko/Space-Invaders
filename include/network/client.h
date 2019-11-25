@@ -17,13 +17,6 @@ struct message_transmitting {
   void *data;
 };
 
-struct message {
-  unsigned int status;
-  unsigned int id_user;
-  unsigned int size_data;
-  char data[0];
-};
-
 /*Теги для status, 1-ая группа технические*/
 #define CONNECT   1
 #define STRT_GS   2
