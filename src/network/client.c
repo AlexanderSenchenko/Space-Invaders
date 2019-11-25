@@ -19,7 +19,9 @@
 struct sockaddr_in addr_server;
 struct serv_information information_to_player;
 struct serv_information information_from_player;
+
 struct message_transmitting message;
+
 socklen_t addr_in_size = sizeof(struct sockaddr_in);
 pthread_t receiver_from_server;
 
@@ -84,7 +86,7 @@ struct message_transmitting wait_start_of_game()
 {
   recvfrom(file_descrip_client, &message,
            sizeof(struct message_transmitting), 0,
-           (struct sockaddr *)&addr_server, &addr_in_size);
+           (struct sockaddr *) &addr_server, &addr_in_size);
 
   return message;
 }
@@ -120,25 +122,19 @@ void expectation()
   }
 }
 
-void send_message(int status, int id_user, void *data)
-{
-  message.status = status;
-  message.id_user = id_user;
-  message.data = &data;
-  
-  sendto(file_descrip_client, &message,
-         sizeof(message), 0,
-         (struct sockaddr *)&addr_server, addr_in_size);/*надо посмотреть id_user*/
-}
-
 void recv_message(struct game *game_mess, struct enemy * enemy_mess,
                   struct player *user_mess, struct bullet * bullet__mess)
 {
+  struct message msg;
+  char message[MAX_SIZE_MSG];
+
   recvfrom(file_descrip_client, &message,
          sizeof(message), 0,
-         (struct sockaddr *)&addr_server, &addr_in_size);
+         (struct sockaddr *) &addr_server, &addr_in_size);
+  
+  memcpy(&msg, message, sizeof(struct message));
  
-  switch(message.status) {
+  switch(msg.status) {
   case STRT_GS:
     break;
   
@@ -150,4 +146,53 @@ void recv_message(struct game *game_mess, struct enemy * enemy_mess,
   
   /*И другие*/
   }
+}
+
+int recv_message_dontwait(struct player *user)
+{
+  struct message msg;
+  char message[MAX_SIZE_MSG];
+
+  recvfrom(file_descrip_client, &message,
+         sizeof(message), MSG_DONTWAIT,
+         (struct sockaddr *) &addr_server, &addr_in_size);
+  
+  memcpy(&msg, message, sizeof(struct message));
+ 
+  switch(msg.status) {
+  case STC_END:
+    return STC_END;
+    break;
+  
+  case STC_MOVE:
+    user->id = msg.id_user;
+    memcpy(user->coord, message + sizeof(struct message),
+           sizeof(struct point));
+    return STC_MOVE;
+    break;
+
+  default:
+    break;
+  }
+
+  return 0;
+}
+
+void send_message(int status, int id_user, void *data, unsigned int size_data)
+{
+  unsigned int size_msg = sizeof(struct message) + size_data;
+  
+  struct message *msg = calloc(1, size_msg);
+  msg->status = status;
+  msg->id_user = id_user;
+  msg->size_data = size_data;
+
+  if (data != NULL)
+    memcpy(msg->data, data, size_data);
+
+  sendto(file_descrip_client, msg, size_msg, 0,
+         (struct sockaddr *) &addr_server, addr_in_size);
+
+  if (msg != NULL)
+    free(msg);
 }

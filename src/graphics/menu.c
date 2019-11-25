@@ -4,6 +4,7 @@
 #include <sys/ioctl.h>
 #include <string.h>
 #include "../../include/graphics/menu.h"
+#include "../../include/network/client.h"
 
 void sig_winch(int signo)
 {
@@ -188,6 +189,10 @@ WINDOW *draw_game_field(const struct game *game)
   wrefresh(wnd);
 
   draw_entity(wnd, game->user->coord, game->user->image);
+  
+  // отправка серверу начальных координат
+  send_message(STS_MOVE, game->user->id, game->user->coord,
+               sizeof(struct point));
 
   return wnd;
 }
@@ -227,33 +232,39 @@ int get_player_action_from_keyboard(WINDOW *game_field,
 
   switch (ch) {
   case 'q':
+    send_message(STS_END, game->user->id, NULL, 0);
     return STATUS_EXIT;
     break;
 
-  case KEY_LEFT://игрок сдвинулся влево
+  case KEY_LEFT: // игрок сдвинулся влево
     erase_entity(game_field, game->user->coord, game->user->image);
 
-    //обновление координат
-    user_move(game->user->coord, MOVE_LEFT);
+    // обновление координат
+    user_move(game->user, MOVE_LEFT);
 
     draw_entity(game_field, game->user->coord, game->user->image);
 
-    //отсылка инфы серверу
+    // отсылка инфы серверу
+    send_message(STS_MOVE, game->user->id, game->user->coord,
+                 sizeof(struct point));
+
     break;
 
-  case KEY_RIGHT://игрок сдвинулся вправо
+  case KEY_RIGHT: // игрок сдвинулся вправо
     erase_entity(game_field, game->user->coord, game->user->image);
 
-    //обновление координат
-    user_move(game->user->coord, MOVE_RIGHT);
+    // обновление координат
+    user_move(game->user, MOVE_RIGHT);
 
     draw_entity(game_field, game->user->coord, game->user->image);
 
-    //отсылка инфы серверу
+    // отсылка инфы серверу
+    send_message(STS_MOVE, game->user->id, (void *) game->user->coord,
+                 sizeof(struct point));
     break;
 
-  case ' '://игрок выстрелил
-    //создание координат для снаряда
+  case ' ': // игрок выстрелил
+    // создание координат для снаряда
     // TODO: Обернуть в функцию
     {
       int shift = strlen(game->user->image) / 2;
@@ -263,10 +274,53 @@ int get_player_action_from_keyboard(WINDOW *game_field,
       draw_entity(game_field, bullet_positon, bullet_model);
     }
 
-  //отсылка инфы серверу
+  // отсылка инфы серверу
   default:
     break;
   }
 
   return STATUS_PLAY;
+}
+
+void refresh_plaer(WINDOW *game_field, struct player *plr_opd,
+                   struct player *plr_new)
+{
+  erase_entity(game_field, plr_opd->coord, plr_opd->image);
+  draw_entity(game_field, plr_new->coord, plr_new->image);
+}
+
+/*
+ * Прием информации в неблокирующем режиме
+ * Пока реализована обновление координат второго пользователя
+ * 
+ */ 
+int server_listening(WINDOW *game_field, struct game *game,
+                     struct player **plr2)
+{
+  int ret_recv;
+  struct point *coord = calloc(1, sizeof(struct point));
+  struct player *plr2_new = user_init(coord);
+  
+  ret_recv = recv_message_dontwait(plr2_new);
+  
+  if (ret_recv == STC_MOVE) {
+    if (*plr2 == NULL) {
+      *plr2 = calloc(1, sizeof(struct player));
+      refresh_plaer(game_field, plr2_new, plr2_new);
+    } else {
+      refresh_plaer(game_field, *plr2, plr2_new);
+    }
+
+    memcpy(*plr2, plr2_new, sizeof(struct player));
+
+    refresh_plaer(game_field, game->user, game->user);
+
+    free(plr2_new);
+    
+    return STC_MOVE;
+  } else if (ret_recv = STC_END) {
+    return STC_END;
+  }
+
+  return 0;
 }
