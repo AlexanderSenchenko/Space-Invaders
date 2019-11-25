@@ -4,6 +4,7 @@
 #include <sys/ioctl.h>
 #include <string.h>
 #include "../../include/graphics/menu.h"
+#include "../../include/network/client.h"
 
 void sig_winch(int signo)
 {
@@ -179,13 +180,15 @@ void draw_waiting_for_player()
   refresh();
 }
 
-WINDOW *draw_game_field()
+WINDOW *draw_game_field(const struct game *game)
 {
   erase();
   WINDOW *wnd = newwin(TERMINAL_HEIGHT, TERMINAL_WIDTH, 0, 0);
   wbkgd(wnd, COLOR_PAIR(3));
   refresh();
   wrefresh(wnd);
+
+  draw_entity(wnd, game->user->coord, game->user->image);
 
   return wnd;
 }
@@ -217,51 +220,57 @@ void draw_entity(WINDOW *game_field, const struct point *entity_positon,
 }
 
 int get_player_action_from_keyboard(WINDOW *game_field,
-                                    struct point *player_positon, struct point *bullet_positon,
-                                    const char *player_model, const char *bullet_model)
+                                    struct game *game,
+                                    struct point *bullet_positon,
+                                    const char *bullet_model)
 {
   int ch = getch();
 
   switch (ch) {
   case 'q':
+    send_message(STS_END, game->user->id, NULL, 0);
     return STATUS_EXIT;
     break;
 
-  case KEY_LEFT://игрок сдвинулся влево
-    erase_entity(game_field, player_positon, player_model);
+  case KEY_LEFT: // игрок сдвинулся влево
+    erase_entity(game_field, game->user->coord, game->user->image);
 
-    //обновление координат
-    user_move(player_positon, MOVE_LEFT);
+    // обновление координат
+    user_move(game->user, MOVE_LEFT);
 
-    draw_entity(game_field, player_positon, player_model);
+    draw_entity(game_field, game->user->coord, game->user->image);
 
-    //отсылка инфы серверу
+    // отсылка инфы серверу
+    send_message(STS_MOVE, game->user->id, game->user->coord,
+                 sizeof(struct point));
+
     break;
 
-  case KEY_RIGHT://игрок сдвинулся вправо
-    erase_entity(game_field, player_positon, player_model);
+  case KEY_RIGHT: // игрок сдвинулся вправо
+    erase_entity(game_field, game->user->coord, game->user->image);
 
-    //обновление координат
-    user_move(player_positon, MOVE_RIGHT);
+    // обновление координат
+    user_move(game->user, MOVE_RIGHT);
 
-    draw_entity(game_field, player_positon, player_model);
+    draw_entity(game_field, game->user->coord, game->user->image);
 
-    //отсылка инфы серверу
+    // отсылка инфы серверу
+    send_message(STS_MOVE, game->user->id, (void *) game->user->coord,
+                 sizeof(struct point));
     break;
 
-  case ' '://игрок выстрелил
-    //создание координат для снаряда
-    /*
-     * + 2 середина игрока при длине 5
-     * + 1 середина игрока при длине 3
-     */
+  case ' ': // игрок выстрелил
+    // создание координат для снаряда
     // TODO: Обернуть в функцию
-    bullet_positon->y = player_positon->y + 2;
-    bullet_positon->x = player_positon->x - 1;
+    {
+      int shift = strlen(game->user->image) / 2;
+      bullet_positon->y = game->user->coord->y + shift;
+      bullet_positon->x = game->user->coord->x - 1;
 
-    draw_entity(game_field, bullet_positon, bullet_model);
+      draw_entity(game_field, bullet_positon, bullet_model);
+    }
 
-  //отсылка инфы серверу
+  // отсылка инфы серверу
   default:
     break;
   }

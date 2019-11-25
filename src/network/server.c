@@ -26,7 +26,6 @@
 #define MV_LEFT 30
 #define MV_RIGHT 31
 
-
 struct serv_information {
   unsigned int status;
 };
@@ -36,7 +35,6 @@ struct message_transmitting {
   unsigned int id_user;
   void *data;
 };
-
 
 struct message_transmitting message;
 struct sockaddr_in addr_server;
@@ -50,7 +48,6 @@ pthread_mutex_t latch = PTHREAD_MUTEX_INITIALIZER;
 int counter_player = 0;  // Counter responsible for counting connected players
 int counter_session = 0;
 int file_descrip_server;
-
 
 void init_server(int argc, char **argv)
 {
@@ -93,13 +90,13 @@ void reception_application()
   if (counter_player < MAX_CLIENT) {
     recvfrom(file_descrip_server, &information_from_player,
              sizeof(information_from_player), 0,
-             (struct sockaddr *)&addr_client[counter_player],
+             (struct sockaddr *) &addr_client[counter_player],
              &addr_in_size);
 
     information_to_player.status = CONNECT;
     sendto(file_descrip_server, &information_to_player,
            sizeof(information_to_player), 0,
-           (struct sockaddr *)&addr_client[counter_player], addr_in_size);
+           (struct sockaddr *) &addr_client[counter_player], addr_in_size);
 
     pthread_mutex_lock(&latch);
     counter_player++;
@@ -114,12 +111,13 @@ void create_new_session()
   int i;
   int number_session;
   int id_user;
-  struct game game_ses;
   struct sockaddr_in addr_client_session[2];
 
   if ((counter_player > 1) && (counter_session < MAX_SESSION)) {
-    send_message(STRT_GS, 0, (void *)&game_ses);
-    send_message(STRT_GS, 1, (void *)&game_ses);
+
+
+    send_message(STRT_GS, 0, NULL, 0);
+    send_message(STRT_GS, 1, NULL, 0);
 
     addr_client_session[0] = addr_client[0];
     addr_client_session[1] = addr_client[1];
@@ -140,10 +138,20 @@ void create_new_session()
     counter_session++;
     pthread_mutex_unlock(&latch);
   }
+
+  // временный цикл, для испровления отпраыки сообщени
+  while (1) {
+    int exit_stauts = recv_message(0, NULL, NULL, NULL);
+
+    if (exit_stauts == STS_END)
+      break;
+  }
+
 }
 
-void send_message(int status, int id_user, void *data)
+void send_message(int status, int id_user, void *data, unsigned int size_data)
 {
+<<<<<<< HEAD
   message.status = status;
   message.id_user = id_user;
   message.data = &data;
@@ -160,6 +168,42 @@ int recv_message(int id_user, struct enemy *enemy_mess, struct player *user_mess
            (struct sockaddr *)&addr_client[id_user], &addr_in_size);
 
   switch (message.status) {
+=======
+  unsigned int size_msg = sizeof(struct message) + size_data;
+
+  struct message *msg = calloc(1, size_msg);
+  msg->status = status;
+  msg->id_user = id_user;
+  msg->size_data = size_data;
+
+  if (data != NULL)
+    memcpy(msg->data, data, size_data);
+
+  sendto(file_descrip_server, msg, size_msg, 0,
+         (struct sockaddr *) &addr_client[id_user], addr_in_size);
+
+  if (msg != NULL)
+    free(msg);
+}
+
+int recv_message(int id_user, struct enemy * enemy_mess,
+                  struct player *user_mess, struct bullet * bullet__mess)
+{
+  struct message msg;
+  char message[MAX_SIZE_MSG];
+
+  int ret = recvfrom(file_descrip_server, message,
+            MAX_SIZE_MSG, 0,
+            (struct sockaddr *) &addr_client[id_user], &addr_in_size);
+
+  memcpy(&msg, message, sizeof(struct message));
+
+  // временно
+  // printf("Size messgae: %d, Act: %d, Id: %d, Size data: %d\n",
+  //        ret, msg.status, msg.id_user, msg.size_data);
+
+  switch(msg.status) {
+>>>>>>> send_info
   case MV_LEFT:
 
     return MV_LEFT;
@@ -169,9 +213,26 @@ int recv_message(int id_user, struct enemy *enemy_mess, struct player *user_mess
     return MV_RIGHT;
 
     break;
+<<<<<<< HEAD
 
+=======
+
+  case STS_MOVE:
+    // временно
+    // {
+    //   struct point coord;
+    //   memcpy(&coord, message + sizeof(struct message), sizeof(struct point));
+    //   printf("y: %d, x: %d\n", coord.y, coord.x);
+    // }
+    break;
+
+  case STS_END:
+    return STS_END;
+>>>>>>> send_info
   /*И другие*/
   }
+
+  return 0;
 }
 void receiver_session()
 {
